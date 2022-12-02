@@ -30,7 +30,7 @@ fn main() {
     println!("Top Three Elves: {:?}", top3);
 }
 
-
+// function found at https://www.reddit.com/r/rust/comments/hgcpds/how_to_split_a_vector_by_an_entry_and_collect_all/fw5c5ml/
 pub fn split_delimited<'a, T>(input: &'a [T], delim: &T) -> Vec<&'a [T]>
 where
     T: PartialEq<T>,
@@ -49,6 +49,7 @@ where
     r
 }
 
+// function found at https://stackoverflow.com/a/35820003
 fn lines_from_file(filename: impl AsRef<Path>) -> io::Result<Vec<String>> {
   BufReader::new(File::open(filename)?).lines().collect()
 }
