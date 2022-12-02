@@ -1,4 +1,5 @@
 use std::{
+  env,
   fs::File,
   io::{self, BufRead, BufReader},
   path::Path,
@@ -6,9 +7,12 @@ use std::{
 
 
 
-fn main() {
+fn main() -> std::io::Result<()>  {
 
-  let input = lines_from_file("/Users/Bill.Rawlinson@mheducation.com/dev/aoc/day1/src/values.txt").expect("Could not load values");
+  let path = env::current_dir()?;
+  let input_file = path.display().to_string() + "/values.txt";
+
+  let input = lines_from_file(input_file).expect("Could not load values");
 
   let output = split_delimited(&input, &"".to_owned());
 
@@ -28,6 +32,8 @@ fn main() {
     sum_vec.truncate(3);
     let top3 : u32 = sum_vec.iter().sum();
     println!("Top Three Elves: {:?}", top3);
+
+    Ok(())
 }
 
 // function found at https://www.reddit.com/r/rust/comments/hgcpds/how_to_split_a_vector_by_an_entry_and_collect_all/fw5c5ml/
