@@ -1,15 +1,12 @@
-use std::{
-    env,
-    fs::File,
-    io::{self, BufRead, BufReader},
-    path::Path,
+#[path = "../../shared/util.rs"] mod util;
+use crate::util::{
+  get_seed_data
 };
 
-fn main() -> std::io::Result<()> {
-    let path = env::current_dir()?;
-    let input_file = path.display().to_string() + "/values.txt";
 
-    let input = lines_from_file(input_file).expect("Could not load values");
+
+fn main() -> std::io::Result<()> {
+    let input = get_seed_data().expect("Could not load values");
 
     let output = split_delimited(&input, &"".to_owned());
 
@@ -50,9 +47,4 @@ where
         r.push(&input[k..]);
     }
     r
-}
-
-// function found at https://stackoverflow.com/a/35820003
-fn lines_from_file(filename: impl AsRef<Path>) -> io::Result<Vec<String>> {
-    BufReader::new(File::open(filename)?).lines().collect()
 }

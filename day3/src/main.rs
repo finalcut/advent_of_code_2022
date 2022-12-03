@@ -1,4 +1,6 @@
 #[path = "../../shared/util.rs"] mod util;
+
+use array_tool::vec::Intersect;
 use crate::util::{
   get_seed_data,
   common_char_in_strings
@@ -49,4 +51,18 @@ fn main() -> std::io::Result<()> {
 
 fn reset_three_rucks() -> Vec<String> {
   return vec!["".to_owned(), "".to_owned(), "".to_owned()];
+}
+pub fn common_char_in_strings(v: &[String]) -> String {
+  let mut result: Vec<char> = v[0].chars().collect();
+
+  for s in v {
+      let vec : Vec<char> = s.chars().collect();
+      result = result.intersect(vec);
+  }
+
+  return if result.len() > 0 {
+    result[0].to_string()
+  } else {
+      "".to_string()
+  };
 }

@@ -1,16 +1,14 @@
-use dict::{Dict, DictIface};
-use std::{
-    env,
-    fs::File,
-    io::{self, BufRead, BufReader},
-    path::Path,
+#[path = "../../shared/util.rs"] mod util;
+use crate::util::{
+  get_seed_data
 };
 
+
+use dict::{Dict, DictIface};
+
 fn main() -> std::io::Result<()> {
-    let file_name = "/values.txt";
-    let path = env::current_dir()?;
-    let input_file = path.display().to_string() + file_name;
-    let rounds = lines_from_file(input_file).expect("Could not load values");
+
+    let rounds = get_seed_data().expect("Could not load values");
 
     // define values
     let mut play_value = Dict::<u16>::new();
@@ -127,9 +125,4 @@ fn main() -> std::io::Result<()> {
     println!("Total 1: {}", total_score_round1);
     println!("Total 2: {}", total_score_round2);
     Ok(())
-}
-
-// function found at https://stackoverflow.com/a/35820003
-fn lines_from_file(filename: impl AsRef<Path>) -> io::Result<Vec<String>> {
-    BufReader::new(File::open(filename)?).lines().collect()
 }

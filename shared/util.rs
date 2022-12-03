@@ -1,4 +1,3 @@
-use array_tool::vec::Intersect;
 use std::{
     env,
     fs::File,
@@ -6,20 +5,7 @@ use std::{
     path::Path,
 };
 
-pub fn common_char_in_strings(v: &[String]) -> String {
-  let mut result: Vec<char> = v[0].chars().collect();
 
-  for s in v {
-      let vec : Vec<char> = s.chars().collect();
-      result = result.intersect(vec);
-  }
-
-  return if result.len() > 0 {
-    result[0].to_string()
-  } else {
-      "".to_string()
-  };
-}
 
 // function found at https://stackoverflow.com/a/35820003
 fn lines_from_file(filename: impl AsRef<Path>) -> io::Result<Vec<String>> {
