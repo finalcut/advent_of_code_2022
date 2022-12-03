@@ -4,6 +4,7 @@ use std::{
   io::{self, BufRead, BufReader},
   path::Path,
 };
+use array_tool::vec::Intersect;
 
 
 
@@ -17,4 +18,19 @@ let file_name = "/values.txt";
 let path = env::current_dir()?;
 let input_file = path.display().to_string() + file_name;
 return lines_from_file(input_file);
+}
+
+pub fn common_char_in_strings(v: &[String]) -> String {
+  let mut result: Vec<char> = v[0].chars().collect();
+
+  for s in v {
+      let vec : Vec<char> = s.chars().collect();
+      result = result.intersect(vec);
+  }
+
+  return if result.len() > 0 {
+    result[0].to_string()
+  } else {
+      "".to_string()
+  };
 }
