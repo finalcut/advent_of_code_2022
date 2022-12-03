@@ -14,48 +14,48 @@ fn main() -> std::io::Result<()> {
 
     // put a underscore at the beginning so I don't have to do index math of +1 all the time
     // position in the string is the priority of the letter
-    let keys = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let priority_order = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     let mut priority_total = 0;
 
-    let mut first_ruck = "".to_owned();
-    let mut second_ruck = "".to_owned();
-    let mut group_ruck_count = 0;
-    let mut group_priority_total = 0;
+    let mut three_rucks = reset_three_rucks();
+
+    let mut three_rucks_priority_total = 0;
     for ruck in rucks {
         // PART 1
         let mid = ruck.len() / 2;
         let (c1, c2) = ruck.split_at(mid);
         let item = common_char_in_strings(&vec![c1.into(), c2.into()]);
 
-        let priority = keys.find(&item).unwrap();
+        let priority = priority_order.find(&item).unwrap();
         priority_total += priority;
 
         // PART 2
-        if first_ruck.eq("") {
-            group_ruck_count = 1;
-            first_ruck = ruck;
+        if three_rucks[0].eq("") {
+            three_rucks[0] = ruck.into();
         } else {
-            group_ruck_count += 1;
-            if group_ruck_count == 2 {
-                second_ruck = ruck;
+            if three_rucks[1].eq("") {
+              three_rucks[1] = ruck.into();
             } else {
                 // 3
-                let item = common_char_in_strings(&vec![first_ruck.into(), second_ruck.into(), ruck.into()]);
-                let priority = keys.find(&item).unwrap();
-                group_priority_total += priority;
-                first_ruck = "".to_owned();
-                second_ruck = "".to_owned();
-                // println!("Round {}, Char: {}, Priority: {}, Total: {}", r / 3, item, priority, group_priority_total);
+                three_rucks[2] = ruck.into();
+                let item = common_char_in_strings(&three_rucks);
+                let priority = priority_order.find(&item).unwrap();
+                three_rucks_priority_total += priority;
+                three_rucks = reset_three_rucks();
+                // println!("Round {}, Char: {}, Priority: {}, Total: {}", r / 3, item, priority, three_rucks_priority_total);
             }
         }
     }
     println!("Round 1 Result = {}", priority_total);
-    println!("Round 2 Result = {}", group_priority_total);
+    println!("Round 2 Result = {}", three_rucks_priority_total);
 
     Ok(())
 }
 
+fn reset_three_rucks() -> Vec<String> {
+  return vec!["".to_owned(), "".to_owned(), "".to_owned()];
+}
 
 fn common_char_in_strings(v: &[String]) -> String {
     let mut result: Vec<char> = v[0].chars().collect();
