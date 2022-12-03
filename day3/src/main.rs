@@ -1,26 +1,20 @@
-use array_tool::vec::Intersect;
-use std::{
-    env,
-    fs::File,
-    io::{self, BufRead, BufReader},
-    path::Path,
+#[path = "../../shared/util.rs"] mod util;
+use crate::util::{
+  get_seed_data,
+  common_char_in_strings
 };
 
 fn main() -> std::io::Result<()> {
-    let file_name = "/values.txt";
-    let path = env::current_dir()?;
-    let input_file = path.display().to_string() + file_name;
-    let rucks = lines_from_file(input_file).expect("Could not load values");
-
     // put a underscore at the beginning so I don't have to do index math of +1 all the time
     // position in the string is the priority of the letter
     let priority_order = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    let mut priority_total = 0;
-
+    let rucks = get_seed_data().expect("Could not load values");
     let mut three_rucks = reset_three_rucks();
 
+    let mut priority_total = 0;
     let mut three_rucks_priority_total = 0;
+
     for ruck in rucks {
         // PART 1
         let mid = ruck.len() / 2;
@@ -55,24 +49,4 @@ fn main() -> std::io::Result<()> {
 
 fn reset_three_rucks() -> Vec<String> {
   return vec!["".to_owned(), "".to_owned(), "".to_owned()];
-}
-
-fn common_char_in_strings(v: &[String]) -> String {
-    let mut result: Vec<char> = v[0].chars().collect();
-
-    for s in v {
-        let vec : Vec<char> = s.chars().collect();
-        result = result.intersect(vec);
-    }
-
-    return if result.len() > 0 {
-      result[0].to_string()
-    } else {
-        "".to_string()
-    };
-}
-
-// function found at https://stackoverflow.com/a/35820003
-fn lines_from_file(filename: impl AsRef<Path>) -> io::Result<Vec<String>> {
-    BufReader::new(File::open(filename)?).lines().collect()
 }
