@@ -26,8 +26,9 @@ fn main() -> std::io::Result<()> {
         // PART 1
         let mid = ruck.len() / 2;
         let (c1, c2) = ruck.split_at(mid);
-        let c3 = common_char(c1, c2);
-        let priority = keys.find(&c3).unwrap();
+        let item = common_char_in_strings(&vec![c1.into(), c2.into()]);
+
+        let priority = keys.find(&item).unwrap();
         priority_total += priority;
 
         // PART 2
@@ -40,7 +41,7 @@ fn main() -> std::io::Result<()> {
                 second_ruck = ruck;
             } else {
                 // 3
-                let item = common_char_3(&first_ruck, &second_ruck, &ruck);
+                let item = common_char_in_strings(&vec![first_ruck.into(), second_ruck.into(), ruck.into()]);
                 let priority = keys.find(&item).unwrap();
                 group_priority_total += priority;
                 first_ruck = "".to_owned();
@@ -55,28 +56,17 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-fn common_char(a: &str, b: &str) -> String {
-    let s: Vec<char> = a.chars().collect();
-    let t: Vec<char> = b.chars().collect();
-    let r = s.intersect(t);
 
-    return if r.len() > 0 {
-        r[0].to_string()
-    } else {
-        "".to_string()
-    };
-}
-// can't overload so I have a dumb name for a 3 string version.
-fn common_char_3(a: &str, b: &str, c: &str) -> String {
-    let s: Vec<char> = a.chars().collect();
-    let t: Vec<char> = b.chars().collect();
-    let u: Vec<char> = c.chars().collect();
+fn common_char_in_strings(v: &[String]) -> String {
+    let mut result: Vec<char> = v[0].chars().collect();
 
-    let x = s.intersect(t);
-    let r = x.intersect(u);
+    for s in v {
+        let vec : Vec<char> = s.chars().collect();
+        result = result.intersect(vec);
+    }
 
-    return if r.len() > 0 {
-        r[0].to_string()
+    return if result.len() > 0 {
+      result[0].to_string()
     } else {
         "".to_string()
     };
