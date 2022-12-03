@@ -22,7 +22,7 @@ fn main() -> std::io::Result<()> {
   let mut priority_total = 0;
 
   let mut first_ruck = "".to_owned();
-  let mut second_ruck = "".to_owned();//combining them before looking for commint letter between first and second_two
+  let mut second_ruck = "".to_owned();
   let mut group_ruck_count = 0;
   let mut group_priority_total = 0;
   for ruck in rucks {
@@ -46,12 +46,10 @@ fn main() -> std::io::Result<()> {
         let item = common_char_3(&first_ruck,&second_ruck, &ruck);
         let priority = keys.find(&item).unwrap();
         group_priority_total += priority;
-        // println!("second ruck: {}", second_ruck);
         first_ruck = "".to_owned();
         second_ruck = "".to_owned();
         // println!("Round {}, Char: {}, Priority: {}, Total: {}", r / 3, item, priority, group_priority_total);
       }
-
     }
 
   }
@@ -62,15 +60,11 @@ fn main() -> std::io::Result<()> {
 }
 
 fn common_char(a: &str, b: &str) -> String {
+  let mut v: Vec<String> = vec![a.into(), b.into()];
+  v = sort_string_vector_by_string_len(&v);
 
-  let (shorter, longer) = if a.len() > b.len() {
-    (b, a)
-  }  else {
-      (a, b)
-  };
-
-  for c in longer.chars() {
-    if shorter.contains(c) {
+  for c in v[0].chars() {
+    if v[1].contains(c) {
       return c.to_string();
     }
   }
@@ -80,17 +74,9 @@ fn common_char(a: &str, b: &str) -> String {
 // can't overload so I have a dumb name for a 3 string version.
 fn common_char_3(a: &str, b: &str, c: &str) -> String {
 
-  // best way I could think of to order the strings by lenghth
  let mut v: Vec<String> = vec![a.into(), b.into(), c.into()];
-  v.sort_by(|a, b| {
-    if a.len() < b.len() {
-        Ordering::Less
-    } else if a.len() == b.len() {
-        Ordering::Equal
-    } else {
-        Ordering::Greater
-    }
-  });
+ v = sort_string_vector_by_string_len(&v);
+
 
   for c in v[0].chars() {
     if v[1].contains(c) && v[2].contains(c) {
@@ -101,7 +87,21 @@ fn common_char_3(a: &str, b: &str, c: &str) -> String {
 
 }
 
+fn sort_string_vector_by_string_len(v: &[String]) -> Vec<String> {
+  let mut vec: Vec<String> = v.to_vec();
+  vec.sort_by(|a, b| {
+    if a.len() < b.len() {
+        Ordering::Less
+    } else if a.len() == b.len() {
+        Ordering::Equal
+    } else {
+        Ordering::Greater
+    }
+  });
 
+  return vec;
+
+}
 
 // function found at https://stackoverflow.com/a/35820003
 fn lines_from_file(filename: impl AsRef<Path>) -> io::Result<Vec<String>> {
