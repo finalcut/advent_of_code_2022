@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 array_tool="1.0.3"
+aoc_util = { path = "../aoc_util" }

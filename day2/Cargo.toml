@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 dict = "0.1.5"
+aoc_util = { path = "../aoc_util" }

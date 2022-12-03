@@ -1,9 +1,4 @@
-#[path = "../../shared/util.rs"] mod util;
-use crate::util::{
-  get_seed_data
-};
-
-
+use aoc_util::{get_seed_data};
 use dict::{Dict, DictIface};
 
 fn main() -> std::io::Result<()> {

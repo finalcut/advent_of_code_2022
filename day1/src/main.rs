@@ -1,5 +1,5 @@
-#[path = "../../shared/util.rs"] mod util;
-use crate::util::{
+
+use aoc_util::{
   get_seed_data
 };
 
