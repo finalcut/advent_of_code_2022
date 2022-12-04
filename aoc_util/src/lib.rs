@@ -34,3 +34,22 @@ pub fn common_char_in_strings(v: &[String]) -> String {
       "".to_string()
   };
 }
+
+// function found at https://www.reddit.com/r/rust/comments/hgcpds/how_to_split_a_vector_by_an_entry_and_collect_all/fw5c5ml/
+pub fn split_delimited<'a, T>(input: &'a [T], delim: &T) -> Vec<&'a [T]>
+where
+    T: PartialEq<T>,
+{
+    let elems = input.iter().enumerate();
+    let (k, mut r) = elems.fold((0, vec![]), |(i, mut r), (j, x)| {
+        if x == delim && j > 0 {
+            r.push(&input[i..j]);
+            return (j, r);
+        }
+        (i, r)
+    });
+    if !input.is_empty() {
+        r.push(&input[k..]);
+    }
+    r
+}
