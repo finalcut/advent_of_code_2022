@@ -14,14 +14,12 @@ fn main() {
   let mut rows : Vec<String> = [].to_vec();
   let mut instructions : Vec<Instruction> = Vec::new();
 
-
   let input = get_seed_data().expect("Could not load values");
 
-  let t = input.clone();
   // find the empty line as it is a good divider between the start and rules
-  let x = t.iter().position(|r| r == "").unwrap();
+  let x = input.iter().position(|r| r == "").unwrap();
   // use that to split the vector into two arrays
-  let (icrates, rules) = t.split_at(x+1);
+  let (icrates, rules) = input.split_at(x+1);
   let mut crates: Vec<String> = icrates.to_vec();
   // get rid of the two lines we don't care about
   crates.pop(); // get rid of blank row.
@@ -40,7 +38,6 @@ fn main() {
   }
 
   crane_mover_9000(&instructions, stacks.clone());
-
   crane_mover_9001(&instructions, stacks.clone());
 }
 
@@ -55,7 +52,6 @@ fn show_message(caption: String, stacks: Vec<VecDeque<String>>) {
   println!("{:?} - {:?}",caption, msg);
 
 }
-
 
 fn transform_input_rows_to_stacks(rows: &Vec<String>) -> Vec<VecDeque<String>> {
   let mut temp_stacks : Vec<VecDeque<String>> = [].to_vec();
