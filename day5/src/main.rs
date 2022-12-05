@@ -37,9 +37,9 @@ fn main() {
 
   let stacks : Vec<VecDeque<String>>  = transform_input_rows_to_stacks(&original_rows);
 
-  part1(instructions.clone(), stacks.clone());
+  crane_mover_9000(instructions.clone(), stacks.clone());
 
-  part2(instructions.clone(), stacks.clone());
+  crane_mover_9001(instructions.clone(), stacks.clone());
 
 }
 
@@ -94,7 +94,8 @@ fn transform_input_rows_to_stacks(original_rows: &Vec<String>) -> Vec<VecDeque<S
   return temp_stacks;
 }
 
-fn part1(instructions: Vec<Vec<i32>>, mut stacks: Vec<VecDeque<String>>){
+// stole function naming idea from: https://philip-weinke.de/2022/12/advent-of-rust-5/
+fn crane_mover_9000(instructions: Vec<Vec<i32>>, mut stacks: Vec<VecDeque<String>>){
   for ins in instructions {
     let count = ins[0];
     let source: usize  = (ins[1]-1) as usize;
@@ -110,7 +111,7 @@ fn part1(instructions: Vec<Vec<i32>>, mut stacks: Vec<VecDeque<String>>){
   show_message("part1".to_owned(), stacks);
 }
 
-fn part2(instructions: Vec<Vec<i32>>, mut stacks: Vec<VecDeque<String>>){
+fn crane_mover_9001(instructions: Vec<Vec<i32>>, mut stacks: Vec<VecDeque<String>>){
   for ins in instructions {
     // move 0 to 1 from 2
     let count = ins[0];
