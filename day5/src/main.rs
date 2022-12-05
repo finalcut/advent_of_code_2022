@@ -3,7 +3,7 @@ use std::collections::VecDeque;
 const PLACEHOLDER: &str = "[-]";
 const EMPTYSPACE: &str = "    ";
 
-
+#[derive(Copy, Clone)]
 struct Instruction {
   count: i64,
   source: usize,
