@@ -5,7 +5,8 @@ use std::{
   path::Path,
 };
 use array_tool::vec::Intersect;
-
+use lazy_static::lazy_static;
+use regex::Regex;
 
 
 // function found at https://stackoverflow.com/a/35820003
@@ -52,4 +53,19 @@ where
         r.push(&input[k..]);
     }
     r
+}
+
+
+
+pub fn str_strip_numbers(s: &str) -> Vec<i64> {
+    lazy_static! {
+        static ref RE: Regex = Regex::new(r"\d+").unwrap();
+    }
+    // iterate over all matches
+    RE.find_iter(s)
+        // try to parse the string matches as i64 (inferred from fn type signature)
+        // and filter out the matches that can't be parsed (e.g. if there are too many digits to store in an i64).
+        .filter_map(|digits| digits.as_str().parse().ok())
+        // collect the results in to a Vec<i64> (inferred from fn type signature)
+        .collect()
 }
