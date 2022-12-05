@@ -3,7 +3,7 @@ use std::collections::VecDeque;
 const PLACEHOLDER: &str = "[-]";
 const EMPTYSPACE: &str = "    ";
 
-#[derive(Copy, Clone)]
+#[derive(Debug,Copy, Clone)]
 struct Instruction {
   count: i64,
   source: usize,
@@ -14,31 +14,31 @@ fn main() {
   let mut original_rows : Vec<String> = [].to_vec();
   let mut instructions : Vec<Instruction> = Vec::new();
 
-  let mut mode: i16 = 0;
 
   let input = get_seed_data().expect("Could not load values");
 
-  for line in input {
+  let t = input.clone();
+  let x = t.iter().position(|r| r == "").unwrap();
+  let (icrates, rules) = t.split_at(x+1);
+  let mut crates: Vec<String> = icrates.to_vec();
+  crates.pop(); // get rid of blank row.
+  crates.pop(); // get rid of index row.
+
+
+
+
+  for line in crates {
     let i = line.to_owned();
+    original_rows.push(i.replace(EMPTYSPACE,PLACEHOLDER).replace(" ",",").replace("][","],["));
+  }
+  let stacks : Vec<VecDeque<String>>  = transform_input_rows_to_stacks(&original_rows);
 
-    if mode == 1 {
-      mode = 2;
-    }
 
-    if i.trim().len() == 0 || (i.contains("1") && !i.contains("move")) {
-      mode = 1; // skip line
-    }
-    if mode == 0 {
-      original_rows.push(i.replace(EMPTYSPACE,PLACEHOLDER).replace(" ",",").replace("][","],["));
-    }
-
-    if mode == 2 {
+  for line in rules {
+      let i = line.to_owned();
       let v: Vec<i64> =  str_strip_numbers(&i);
       instructions.push(build_instruction(v.clone()));
-    }
   }
-
-  let stacks : Vec<VecDeque<String>>  = transform_input_rows_to_stacks(&original_rows);
 
   crane_mover_9000(&instructions, stacks.clone());
 
