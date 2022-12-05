@@ -11,28 +11,27 @@ struct Instruction {
 }
 
 fn main() {
-  let mut original_rows : Vec<String> = [].to_vec();
+  let mut rows : Vec<String> = [].to_vec();
   let mut instructions : Vec<Instruction> = Vec::new();
 
 
   let input = get_seed_data().expect("Could not load values");
 
   let t = input.clone();
+  // find the empty line as it is a good divider between the start and rules
   let x = t.iter().position(|r| r == "").unwrap();
+  // use that to split the vector into two arrays
   let (icrates, rules) = t.split_at(x+1);
   let mut crates: Vec<String> = icrates.to_vec();
+  // get rid of the two lines we don't care about
   crates.pop(); // get rid of blank row.
   crates.pop(); // get rid of index row.
 
-
-
-
   for line in crates {
     let i = line.to_owned();
-    original_rows.push(i.replace(EMPTYSPACE,PLACEHOLDER).replace(" ",",").replace("][","],["));
+    rows.push(i.replace(EMPTYSPACE,PLACEHOLDER).replace(" ",",").replace("][","],["));
   }
-  let stacks : Vec<VecDeque<String>>  = transform_input_rows_to_stacks(&original_rows);
-
+  let stacks : Vec<VecDeque<String>>  = transform_input_rows_to_stacks(&rows);
 
   for line in rules {
       let i = line.to_owned();
@@ -43,7 +42,6 @@ fn main() {
   crane_mover_9000(&instructions, stacks.clone());
 
   crane_mover_9001(&instructions, stacks.clone());
-
 }
 
 fn show_message(caption: String, stacks: Vec<VecDeque<String>>) {
@@ -59,10 +57,10 @@ fn show_message(caption: String, stacks: Vec<VecDeque<String>>) {
 }
 
 
-fn transform_input_rows_to_stacks(original_rows: &Vec<String>) -> Vec<VecDeque<String>> {
+fn transform_input_rows_to_stacks(rows: &Vec<String>) -> Vec<VecDeque<String>> {
   let mut temp_stacks : Vec<VecDeque<String>> = [].to_vec();
   let mut maxlen = 0;
-  for x in original_rows {
+  for x in rows {
     let y: Vec<&str> = x.split(",").collect();
     let foo = y.len();
     if  foo > maxlen {
@@ -70,7 +68,7 @@ fn transform_input_rows_to_stacks(original_rows: &Vec<String>) -> Vec<VecDeque<S
     }
   }
   let mut final_rows = vec!();
-  for x in original_rows {
+  for x in rows {
     let mut y: Vec<&str> = x.split(",").collect();
     let mut foo = y.len();
     while foo < maxlen {
@@ -100,14 +98,11 @@ fn transform_input_rows_to_stacks(original_rows: &Vec<String>) -> Vec<VecDeque<S
 // stole function naming idea from: https://philip-weinke.de/2022/12/advent-of-rust-5/
 fn crane_mover_9000(instructions: &Vec<Instruction>, mut stacks: Vec<VecDeque<String>>){
   for ins in instructions {
-
-
     for _i in 0..ins.count {
       let val = stacks[ins.source].pop_back().unwrap();
       stacks[ins.dest].push_back(val);
     }
   }
-
 
   show_message("part1".to_owned(), stacks);
 }
@@ -118,16 +113,13 @@ fn crane_mover_9001(instructions: &Vec<Instruction>, mut stacks: Vec<VecDeque<St
     //println!("ins: {:?}", ins);
     let mut claw : VecDeque<String> =  VecDeque::new();
     for _i in 0..ins.count {
-
       let val = stacks[ins.source].pop_back().unwrap();
       claw.push_front(val);
     }
 
-
     while claw.len() > 0 {
       let con = claw.pop_front().unwrap();
       stacks[ins.dest].push_back(con.to_string());
-
     }
 
   }
