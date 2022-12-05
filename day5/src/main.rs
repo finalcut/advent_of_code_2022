@@ -37,10 +37,74 @@ fn main() {
 
 
   }
+  let mut stacks : Vec<VecDeque<String>>  = transform_rows(&original_rows);
 
 
+  // PART 2 LOGIC
+  let mut stacks2 = stacks.clone();
+  let ins_set = instructions.clone();
+  for ins in ins_set {
+    // move 0 to 1 from 2
+    let count = ins[0];
+    let source: usize  = (ins[1]-1) as usize;
+    let dest: usize = (ins[2]-1) as usize;
+    //println!("ins: {:?}", ins);
+    let mut claw : VecDeque<String> =  VecDeque::new();
+    for _i in 0..count {
+
+      let val = stacks2[source].pop_back().unwrap();
+      claw.push_front(val);
+
+
+    }
+
+
+    while claw.len() > 0 {
+      let con = claw.pop_front().unwrap();
+      stacks2[dest].push_back(con.to_string());
+
+    }
+
+  }
+  show_message("part2".to_owned(), stacks2);
+
+
+
+
+  // PART 1 LOGIC
+   for ins in instructions {
+    let count = ins[0];
+    let source: usize  = (ins[1]-1) as usize;
+    let dest: usize = (ins[2]-1) as usize;
+
+    for _i in 0..count {
+      let val = stacks[source].pop_back().unwrap();
+      stacks[dest].push_back(val);
+    }
+  }
+
+
+  show_message("part1".to_owned(), stacks);
+
+}
+
+fn show_message(caption: String, stacks: Vec<VecDeque<String>>) {
+  let mut msg: String = "".to_owned();
+  for mut stack in stacks {
+    let bs: String = stack.pop_back().unwrap();
+    //let b = bs.clone();
+    msg.push_str(&bs);
+  }
+  msg = msg.replace("[","").replace("]","");
+  println!("{:?} - {:?}",caption, msg);
+
+}
+
+
+fn transform_rows(original_rows: &Vec<String>) -> Vec<VecDeque<String>> {
+  let mut temp_stacks : Vec<VecDeque<String>> = [].to_vec();
   let mut maxlen = 0;
-  for x in &original_rows {
+  for x in original_rows {
     let y: Vec<&str> = x.split(",").collect();
     let foo = y.len();
     if  foo > maxlen {
@@ -48,7 +112,7 @@ fn main() {
     }
   }
   let mut final_rows = vec!();
-  for x in &original_rows {
+  for x in original_rows {
     let mut y: Vec<&str> = x.split(",").collect();
     let mut foo = y.len();
     while foo < maxlen {
@@ -58,7 +122,6 @@ fn main() {
     final_rows.push(y);
   }
 
-  let mut temp_stacks : Vec<VecDeque<String>> = [].to_vec();
 
   for _n in 0..final_rows[0].len() {
     let stack : VecDeque<String> = VecDeque::new();
@@ -73,35 +136,5 @@ fn main() {
       }
     }
   }
-  println!("temp_stacks - {:?}", temp_stacks);
-
-
-
-  for ins in instructions {
-    // move 0 to 1 from 2
-    let count = ins[0];
-    let source: usize  = (ins[1]-1) as usize;
-    let dest: usize = (ins[2]-1) as usize;
-
-    for _i in 0..count {
-      let val = temp_stacks[source].pop_back().unwrap();
-      temp_stacks[dest].push_back(val);
-    }
-  }
-
-  let mut msg: String = "".to_owned();
-  for mut stack in temp_stacks {
-    let bs: String = stack.pop_back().unwrap();
-    //let b = bs.clone();
-    msg.push_str(&bs);
-  }
-
-
-  println!("part1 - {:?}",msg);
-
-
-
-
-
-
+  return temp_stacks;
 }
