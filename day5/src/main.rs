@@ -18,7 +18,6 @@ fn main() {
       mode = 2;
     }
 
-
     if i.trim().len() == 0 || (i.contains("1") && !i.contains("move")) {
       mode = 1; // skip line
     }
@@ -34,18 +33,10 @@ fn main() {
       .collect();
       instructions.push(v);
     }
-
-
   }
+
   let stacks : Vec<VecDeque<String>>  = transform_input_rows_to_stacks(&original_rows);
 
-
-
-
-
-
-
-  // PART 1 LOGIC
   part1(instructions.clone(), stacks.clone());
 
   part2(instructions.clone(), stacks.clone());
