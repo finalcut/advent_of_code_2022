@@ -3,9 +3,16 @@ use std::collections::VecDeque;
 const PLACEHOLDER: &str = "[-]";
 const EMPTYSPACE: &str = "    ";
 
+
+struct Instruction {
+  count: i64,
+  source: usize,
+  dest: usize,
+}
+
 fn main() {
   let mut original_rows : Vec<String> = [].to_vec();
-  let mut instructions : Vec<Vec<i64>> = [].to_vec();
+  let mut instructions : Vec<Instruction> = Vec::new();
 
   let mut mode: i16 = 0;
 
@@ -27,15 +34,15 @@ fn main() {
 
     if mode == 2 {
       let v: Vec<i64> =  str_strip_numbers(&i);
-      instructions.push(v);
+      instructions.push(build_instruction(v.clone()));
     }
   }
 
   let stacks : Vec<VecDeque<String>>  = transform_input_rows_to_stacks(&original_rows);
 
-  crane_mover_9000(instructions.clone(), stacks.clone());
+  crane_mover_9000(&instructions, stacks.clone());
 
-  crane_mover_9001(instructions.clone(), stacks.clone());
+  crane_mover_9001(&instructions, stacks.clone());
 
 }
 
@@ -91,15 +98,13 @@ fn transform_input_rows_to_stacks(original_rows: &Vec<String>) -> Vec<VecDeque<S
 }
 
 // stole function naming idea from: https://philip-weinke.de/2022/12/advent-of-rust-5/
-fn crane_mover_9000(instructions: Vec<Vec<i64>>, mut stacks: Vec<VecDeque<String>>){
+fn crane_mover_9000(instructions: &Vec<Instruction>, mut stacks: Vec<VecDeque<String>>){
   for ins in instructions {
-    let count = ins[0];
-    let source: usize  = (ins[1]-1) as usize;
-    let dest: usize = (ins[2]-1) as usize;
 
-    for _i in 0..count {
-      let val = stacks[source].pop_back().unwrap();
-      stacks[dest].push_back(val);
+
+    for _i in 0..ins.count {
+      let val = stacks[ins.source].pop_back().unwrap();
+      stacks[ins.dest].push_back(val);
     }
   }
 
@@ -107,27 +112,33 @@ fn crane_mover_9000(instructions: Vec<Vec<i64>>, mut stacks: Vec<VecDeque<String
   show_message("part1".to_owned(), stacks);
 }
 
-fn crane_mover_9001(instructions: Vec<Vec<i64>>, mut stacks: Vec<VecDeque<String>>){
+fn crane_mover_9001(instructions: &Vec<Instruction>, mut stacks: Vec<VecDeque<String>>){
   for ins in instructions {
-    // move 0 to 1 from 2
-    let count = ins[0];
-    let source: usize  = (ins[1]-1) as usize;
-    let dest: usize = (ins[2]-1) as usize;
+
     //println!("ins: {:?}", ins);
     let mut claw : VecDeque<String> =  VecDeque::new();
-    for _i in 0..count {
+    for _i in 0..ins.count {
 
-      let val = stacks[source].pop_back().unwrap();
+      let val = stacks[ins.source].pop_back().unwrap();
       claw.push_front(val);
     }
 
 
     while claw.len() > 0 {
       let con = claw.pop_front().unwrap();
-      stacks[dest].push_back(con.to_string());
+      stacks[ins.dest].push_back(con.to_string());
 
     }
 
   }
   show_message("part2".to_owned(), stacks);
+}
+
+fn build_instruction(ins: Vec<i64>) -> Instruction {
+  Instruction {
+    count: ins[0],
+    // this is a stupid place to do this probably..good luck debugging if shit hits the fan
+    source: (ins[1] - 1) as usize,
+    dest: (ins[2]-1) as usize,
+  }
 }
