@@ -37,54 +37,18 @@ fn main() {
 
 
   }
-  let mut stacks : Vec<VecDeque<String>>  = transform_rows(&original_rows);
+  let stacks : Vec<VecDeque<String>>  = transform_input_rows_to_stacks(&original_rows);
 
 
-  // PART 2 LOGIC
-  let mut stacks2 = stacks.clone();
-  let ins_set = instructions.clone();
-  for ins in ins_set {
-    // move 0 to 1 from 2
-    let count = ins[0];
-    let source: usize  = (ins[1]-1) as usize;
-    let dest: usize = (ins[2]-1) as usize;
-    //println!("ins: {:?}", ins);
-    let mut claw : VecDeque<String> =  VecDeque::new();
-    for _i in 0..count {
 
-      let val = stacks2[source].pop_back().unwrap();
-      claw.push_front(val);
-
-
-    }
-
-
-    while claw.len() > 0 {
-      let con = claw.pop_front().unwrap();
-      stacks2[dest].push_back(con.to_string());
-
-    }
-
-  }
-  show_message("part2".to_owned(), stacks2);
 
 
 
 
   // PART 1 LOGIC
-   for ins in instructions {
-    let count = ins[0];
-    let source: usize  = (ins[1]-1) as usize;
-    let dest: usize = (ins[2]-1) as usize;
+  part1(instructions.clone(), stacks.clone());
 
-    for _i in 0..count {
-      let val = stacks[source].pop_back().unwrap();
-      stacks[dest].push_back(val);
-    }
-  }
-
-
-  show_message("part1".to_owned(), stacks);
+  part2(instructions.clone(), stacks.clone());
 
 }
 
@@ -101,7 +65,7 @@ fn show_message(caption: String, stacks: Vec<VecDeque<String>>) {
 }
 
 
-fn transform_rows(original_rows: &Vec<String>) -> Vec<VecDeque<String>> {
+fn transform_input_rows_to_stacks(original_rows: &Vec<String>) -> Vec<VecDeque<String>> {
   let mut temp_stacks : Vec<VecDeque<String>> = [].to_vec();
   let mut maxlen = 0;
   for x in original_rows {
@@ -137,4 +101,45 @@ fn transform_rows(original_rows: &Vec<String>) -> Vec<VecDeque<String>> {
     }
   }
   return temp_stacks;
+}
+
+fn part1(instructions: Vec<Vec<i32>>, mut stacks: Vec<VecDeque<String>>){
+  for ins in instructions {
+    let count = ins[0];
+    let source: usize  = (ins[1]-1) as usize;
+    let dest: usize = (ins[2]-1) as usize;
+
+    for _i in 0..count {
+      let val = stacks[source].pop_back().unwrap();
+      stacks[dest].push_back(val);
+    }
+  }
+
+
+  show_message("part1".to_owned(), stacks);
+}
+
+fn part2(instructions: Vec<Vec<i32>>, mut stacks: Vec<VecDeque<String>>){
+  for ins in instructions {
+    // move 0 to 1 from 2
+    let count = ins[0];
+    let source: usize  = (ins[1]-1) as usize;
+    let dest: usize = (ins[2]-1) as usize;
+    //println!("ins: {:?}", ins);
+    let mut claw : VecDeque<String> =  VecDeque::new();
+    for _i in 0..count {
+
+      let val = stacks[source].pop_back().unwrap();
+      claw.push_front(val);
+    }
+
+
+    while claw.len() > 0 {
+      let con = claw.pop_front().unwrap();
+      stacks[dest].push_back(con.to_string());
+
+    }
+
+  }
+  show_message("part2".to_owned(), stacks);
 }
