@@ -1,0 +1,6 @@
+{
+  "editor.trimAutoWhitespace": false,
+  "[plaintext]": {
+    "files.trimTrailingWhitespace": false
+  }
+}
