@@ -2,8 +2,6 @@ use aoc_util::{get_seed_data, str_strip_numbers, string_to_vector_by_len};
 
 use std::collections::VecDeque;
 
-const EMPTYSPACE: &str = "    "; // four empties make up a space..
-
 #[derive(Debug,Copy, Clone)]
 struct Instruction {
   count: i64,
