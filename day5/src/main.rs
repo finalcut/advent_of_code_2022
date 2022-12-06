@@ -1,7 +1,8 @@
-use aoc_util::{get_seed_data, str_strip_numbers};
+use aoc_util::{get_seed_data, str_strip_numbers, string_to_vector_by_len};
+
 use std::collections::VecDeque;
-const PLACEHOLDER: &str = "[-]";
-const EMPTYSPACE: &str = "    ";
+
+const EMPTYSPACE: &str = "    "; // four empties make up a space..
 
 #[derive(Debug,Copy, Clone)]
 struct Instruction {
@@ -11,7 +12,7 @@ struct Instruction {
 }
 
 fn main() {
-  let mut rows : Vec<String> = [].to_vec();
+
   let mut instructions : Vec<Instruction> = Vec::new();
 
   let input = get_seed_data().expect("Could not load values");
@@ -25,11 +26,7 @@ fn main() {
   crates.pop(); // get rid of blank row.
   crates.pop(); // get rid of index row.
 
-  for line in crates {
-    let i = line.to_owned();
-    rows.push(i.replace(EMPTYSPACE,PLACEHOLDER).replace(" ",",").replace("][","],["));
-  }
-  let stacks : Vec<VecDeque<String>>  = transform_input_rows_to_stacks(&rows);
+  let stacks : Vec<VecDeque<String>>  = transform_input_rows_to_stacks(&crates);
 
   for line in rules {
       let i = line.to_owned();
@@ -44,7 +41,7 @@ fn main() {
 fn show_message(caption: String, stacks: Vec<VecDeque<String>>) {
   let mut msg: String = "".to_owned();
   for mut stack in stacks {
-    let bs: String = stack.pop_back().unwrap();
+    let bs: String = stack.pop_back().unwrap(); // build the message from the "top" of each stack
     //let b = bs.clone();
     msg.push_str(&bs);
   }
@@ -54,41 +51,30 @@ fn show_message(caption: String, stacks: Vec<VecDeque<String>>) {
 }
 
 fn transform_input_rows_to_stacks(rows: &Vec<String>) -> Vec<VecDeque<String>> {
-  let mut temp_stacks : Vec<VecDeque<String>> = [].to_vec();
-  let mut maxlen = 0;
-  for x in rows {
-    let y: Vec<&str> = x.split(",").collect();
-    let foo = y.len();
-    if  foo > maxlen {
-      maxlen = foo
-    }
-  }
+  let mut stacks : Vec<VecDeque<String>> = [].to_vec();
+
+
   let mut final_rows = vec!();
+
   for x in rows {
-    let mut y: Vec<&str> = x.split(",").collect();
-    let mut foo = y.len();
-    while foo < maxlen {
-      y.push(PLACEHOLDER);
-      foo += 1;
-    }
+    let y: Vec<&str> = string_to_vector_by_len(&x, 4);
     final_rows.push(y);
   }
 
-
   for _n in 0..final_rows[0].len() {
     let stack : VecDeque<String> = VecDeque::new();
-    temp_stacks.push(stack);
+    stacks.push(stack);
   }
 
   for row in final_rows {
     for i in 0..row.len() {
-      let val = row[i].to_string();
-      if !val.eq(PLACEHOLDER) {
-        temp_stacks[i].push_front(row[i].to_string());
+      let cell = row[i].to_string().trim().to_string();
+      if cell.len() > 0 {
+        stacks[i].push_front(cell);
       }
     }
   }
-  return temp_stacks;
+  return stacks;
 }
 
 // stole function naming idea from: https://philip-weinke.de/2022/12/advent-of-rust-5/

@@ -3,6 +3,7 @@ use std::{
   fs::File,
   io::{self, BufRead, BufReader},
   path::Path,
+  str,
 };
 use array_tool::vec::Intersect;
 use lazy_static::lazy_static;
@@ -68,4 +69,14 @@ pub fn str_strip_numbers(s: &str) -> Vec<i64> {
         .filter_map(|digits| digits.as_str().parse().ok())
         // collect the results in to a Vec<i64> (inferred from fn type signature)
         .collect()
+}
+
+pub fn string_to_vector_by_len(s: &str, len: usize) -> Vec<&str> {
+  let t = s.clone();
+  return t.as_bytes()
+  .chunks(len)
+  .map(str::from_utf8)
+  .collect::<Result<Vec<&str>, _>>()
+  .unwrap();
+
 }
