@@ -23,7 +23,7 @@ pub fn get_test_data() -> io::Result<Vec<String>> {
   return read_file("test.txt");
 }
 
-fn read_file(filename: &str) ->  io::Result<Vec<String>> {
+pub fn read_file(filename: &str) ->  io::Result<Vec<String>> {
   let path = env::current_dir()?;
   let input_file = path.display().to_string() + "/" + filename;
   return lines_from_file(input_file);
