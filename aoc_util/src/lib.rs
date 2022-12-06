@@ -16,10 +16,17 @@ BufReader::new(File::open(filename)?).lines().collect()
 }
 
 pub fn get_seed_data() -> io::Result<Vec<String>> {
-let file_name = "/values.txt";
-let path = env::current_dir()?;
-let input_file = path.display().to_string() + file_name;
-return lines_from_file(input_file);
+  return read_file("values.txt");
+}
+
+pub fn get_test_data() -> io::Result<Vec<String>> {
+  return read_file("test.txt");
+}
+
+fn read_file(filename: &str) ->  io::Result<Vec<String>> {
+  let path = env::current_dir()?;
+  let input_file = path.display().to_string() + "/" + filename;
+  return lines_from_file(input_file);
 }
 
 pub fn common_char_in_strings(v: &[String]) -> String {
