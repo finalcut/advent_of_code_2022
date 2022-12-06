@@ -1,4 +1,4 @@
-use aoc_util::{get_seed_data, common_char_in_strings};
+use aoc_util::{common_char_in_strings, get_seed_data};
 
 fn main() -> std::io::Result<()> {
     // put a underscore at the beginning so I don't have to do index math of +1 all the time
@@ -25,7 +25,7 @@ fn main() -> std::io::Result<()> {
             three_rucks[0] = ruck.into();
         } else {
             if three_rucks[1].eq("") {
-              three_rucks[1] = ruck.into();
+                three_rucks[1] = ruck.into();
             } else {
                 // 3
                 three_rucks[2] = ruck.into();
@@ -44,5 +44,5 @@ fn main() -> std::io::Result<()> {
 }
 
 fn reset_three_rucks() -> Vec<String> {
-  return vec!["".to_owned(), "".to_owned(), "".to_owned()];
+    return vec!["".to_owned(), "".to_owned(), "".to_owned()];
 }

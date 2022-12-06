@@ -1,8 +1,7 @@
-use aoc_util::{get_seed_data};
+use aoc_util::get_seed_data;
 use dict::{Dict, DictIface};
 
 fn main() -> std::io::Result<()> {
-
     let rounds = get_seed_data().expect("Could not load values");
 
     // define values
