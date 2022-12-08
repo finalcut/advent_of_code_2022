@@ -7,4 +7,3 @@ edition = "2021"
 
 [dependencies]
 aoc_util = { path = "../aoc_util" }
-dict = "0.1.5"
