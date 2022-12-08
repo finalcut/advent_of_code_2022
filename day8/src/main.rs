@@ -37,8 +37,8 @@ fn main() {
           let tree_score = get_tree_score(&data, row_id, col_id);
           if tree_score > max_scienic_score {
             max_scienic_score = tree_score;
-            big_x = col_id;
-            big_y = row_id;
+            big_y = col_id;
+            big_x = row_id;
           }
 
           if tall {
@@ -140,12 +140,17 @@ fn get_tree_score(data: &Vec<Vec<u32>>, row_index: usize, col_index: usize) -> i
     println!("COMP SCORE val: {}, at: {},{}", val, row_index, col_index);
     println!("left: {:?} right: {:?}", left, right);
   }
+
+  //LEFT
   let mut x = left.len();
   while x > 0 {
     x = x-1;
     let cell = left[x];
-    if cell <= val {
+    if cell < val {
       score = score +1;
+    } else if cell == val{
+      score = score +1;
+      break;
     } else {
       break;
     }
@@ -156,6 +161,8 @@ fn get_tree_score(data: &Vec<Vec<u32>>, row_index: usize, col_index: usize) -> i
     }
     total = total * score;
   }
+
+  // RIGHT
   score = 0;
   for cell in right.iter().skip(1) {
     if cell < &val {
@@ -175,6 +182,7 @@ fn get_tree_score(data: &Vec<Vec<u32>>, row_index: usize, col_index: usize) -> i
   }
 
 
+  //TOP
   score = 0;
   let mut y = row_index;
   while y > 0 {
