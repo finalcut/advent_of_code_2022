@@ -7,7 +7,7 @@ fn main() {
     let info = build_path_map(input);
 
     let answer1 = sum_directories_bigger_than(&info, 100000 as i64);
-    println!("answer 1 : {:#?}", answer1);
+    println!("answer 1 : {}", answer1);
 
     // max space = 70000000
     // need free space of 30000000
@@ -15,9 +15,9 @@ fn main() {
     let keytotal = get_dir_size(&info, key);
     let freespace = 70000000 - keytotal;
     let needed = 30000000 - freespace;
-    let answer2 = smallest_dir_size_bigger_than(&info, needed, freespace);
-    println!("answer 2 : {:#?}", answer2);
-}
+    let answer2 = smallest_dir_size_bigger_than(&info, needed, 30000000);
+    println!("answer 2 : {}", answer2);
+  }
 
 fn build_path_map(input: Vec<String>) -> HashMap<String, i64> {
     let mut current_key: String = "".to_string();
@@ -79,7 +79,6 @@ fn smallest_dir_size_bigger_than(data: &HashMap<String, i64>, min_size: i64, max
             ans = keytotal;
         }
     }
-
     return ans;
 }
 
@@ -107,5 +106,16 @@ mod tests {
       let info = build_path_map(input);
       let answer1 = sum_directories_bigger_than(&info, 100000 as i64);
       assert_eq!(answer1, 95437);
+    }
+    #[test]
+    fn run_part2_test() {
+      let input = get_test_data().expect("Could not load values");
+      let info = build_path_map(input);
+      let key = ",/";
+      let keytotal = get_dir_size(&info, key);
+      let freespace = 70000000 - keytotal;
+      let needed = 30000000 - freespace;
+      let answer2 = smallest_dir_size_bigger_than(&info, needed, 30000000);
+      assert_eq!(answer2, 24933642);
     }
 }
