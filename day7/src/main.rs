@@ -29,15 +29,15 @@ fn build_path_map(input: Vec<String>) -> HashMap<String, i64> {
             let name = parts[2].trim();
 
             if !name.eq("..") {
-                let mut keyval = current_key.clone();
+                let mut keyval = current_key;
                 keyval = keyval + "," + name;
-                current_key = keyval.clone();
-                info.insert(keyval.clone(), 0 as i64);
+                current_key = keyval.clone(); // need a clone here becuase I'm putting it in the info hash I think
+                info.insert(keyval, 0 as i64);
             } else {
                 // remove the last key from the current_key
-                let key = current_key.clone();
+                let key = current_key;
                 let (t, _x) = key.rsplit_once(',').unwrap();
-                current_key = t.to_string().clone();
+                current_key = t.to_string();
             }
         }
         if line.chars().next().unwrap().is_digit(10) {
@@ -63,7 +63,7 @@ fn sum_directories_bigger_than(data: &HashMap<String, i64>, max_size: i64) -> i6
     for key in data.keys() {
         let keytotal = get_dir_size(&data, &key);
         if keytotal <= max_size {
-            total = total + keytotal.clone();
+            total = total + keytotal;
         }
     }
 
@@ -76,7 +76,7 @@ fn smallest_dir_size_bigger_than(data: &HashMap<String, i64>, min_size: i64, max
     for key in data.keys() {
         let keytotal = get_dir_size(&data, &key);
         if keytotal > min_size && keytotal < ans {
-            ans = keytotal.clone();
+            ans = keytotal;
         }
     }
 
@@ -88,7 +88,7 @@ fn get_dir_size(data: &HashMap<String, i64>, key: &str) -> i64 {
     for ikey in data.keys() {
         if ikey.contains(key) {
             let val = data.get(ikey).unwrap();
-            keytotal = keytotal + val.clone();
+            keytotal = keytotal + val;
         }
     }
     return keytotal;
