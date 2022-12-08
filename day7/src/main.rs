@@ -93,3 +93,19 @@ fn get_dir_size(data: &HashMap<String, i64>, key: &str) -> i64 {
     }
     return keytotal;
 }
+
+
+#[cfg(test)]
+mod tests {
+    // super::* makes sure the methods in the non-test section are available to test
+    use super::*;
+    use aoc_util::get_test_data;
+
+    #[test]
+    fn run_part1_test() {
+      let input = get_test_data().expect("Could not load values");
+      let info = build_path_map(input);
+      let answer1 = sum_directories_bigger_than(&info, 100000 as i64);
+      assert_eq!(answer1, 95437);
+    }
+}
