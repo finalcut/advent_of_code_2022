@@ -53,9 +53,9 @@ fn do_it(moves: Vec<String>, rope_len: usize, caption: &str) {
     for line in moves {
         let move_info: Vec<&str> = line.split_whitespace().collect();
         let dir = move_info[0];
-        let dist: i16 = move_info[1].parse().unwrap();
+        let distance_to_travel: i16 = move_info[1].parse().unwrap();
 
-        for _i in 0..dist {
+        for _i in 0..distance_to_travel {
             rope.knots[0].position.x += directions.get(dir).unwrap().x;
             rope.knots[0].position.y += directions.get(dir).unwrap().y;
 
