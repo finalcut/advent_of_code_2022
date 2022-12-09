@@ -98,7 +98,7 @@ fn move_tail(head: Coord, tail: &mut Coord) {
 
     if y_diff > 0 {
         tail.y += 1;
-    } else if x_diff < 0 {
+    } else if y_diff < 0 {
         tail.y -= 1;
     }
 }
