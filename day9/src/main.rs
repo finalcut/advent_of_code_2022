@@ -2,7 +2,7 @@ use aoc_util::read_file;
 use std::collections::HashMap;
 use std::fmt;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 struct Coord {
     x: i16,
     y: i16,
