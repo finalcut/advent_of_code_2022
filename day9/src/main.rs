@@ -25,24 +25,30 @@ struct Rope {
 }
 
 fn main() {
-    let part1_moves = read_file("test1.txt").expect("Could not load values");
 
+  // passes withs sample data; but not real data.
+  // real answer for my data was 6236 and it was correct. with this new implementation I get 5342 - so pretty far off.
+  // try with values.txt
+    let part1_moves = read_file("part_1_sample.txt").expect("Could not load values");
     do_it(part1_moves, 2, "Part 1:");
 
-    let part2_moves = read_file("test2.txt").expect("Could not load values");
+    // sample data should result in 36 but I get 28
+    let part2_moves = read_file("part_2_sample.txt").expect("Could not load values");
     do_it(part2_moves, 10, "Part 2:");
 }
 
 fn do_it(moves: Vec<String>, rope_len: usize, caption: &str) {
     let mut rope = get_rope(rope_len);
-    let mut results: Vec<[i16; 2]> = Vec::new();
-    results.push([0,0]); // starting point
+    let mut results: Vec<String> = Vec::new();
+
+    let ti = rope_len - 1;
+    results.push(rope.knots[ti].position.to_string()); // starting point
 
     let mut directions: HashMap<String, Coord> = HashMap::<String, Coord>::new();
+    directions.insert("R".to_string(), Coord { x: 1, y: 0 });
+    directions.insert("L".to_string(), Coord { x: -1, y: 0 });
     directions.insert("U".to_string(), Coord { x: 0, y: 1 });
     directions.insert("D".to_string(), Coord { x: 0, y: -1 });
-    directions.insert("L".to_string(), Coord { x: -1, y: 0 });
-    directions.insert("R".to_string(), Coord { x: 1, y: 0 });
 
     for line in moves {
         let move_info: Vec<&str> = line.split_whitespace().collect();
@@ -56,11 +62,8 @@ fn do_it(moves: Vec<String>, rope_len: usize, caption: &str) {
             for x in 1..rope_len {
                 rope.knots[x].position =
                     get_new_tail(&rope.knots[x - 1].position, &rope.knots[x].position);
-                if x + 1 == rope_len {
-                  let foo : [i16; 2] = [rope.knots[x].position.x, rope.knots[x].position.y]; // wasn't sure strings were "unique"
-                  results.push(foo);
-                }
             }
+            results.push(rope.knots[ti].position.to_string());
         }
     }
 
