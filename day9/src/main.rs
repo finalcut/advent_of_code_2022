@@ -26,10 +26,9 @@ struct Rope {
 }
 
 fn main() {
-
-  // passes withs sample data; but not real data.
-  // real answer for my data was 6236 and it was correct. with this new implementation I get 5342 - so pretty far off.
-  // try with values.txt
+    // passes withs sample data; but not real data.
+    // real answer for my data was 6236 and it was correct. with this new implementation I get 5342 - so pretty far off.
+    // try with values.txt
     let part1_moves = read_file("part_1_sample.txt").expect("Could not load values");
     do_it(part1_moves, 2, "Part 1:");
 
@@ -60,7 +59,10 @@ fn do_it(moves: Vec<String>, rope_len: usize, caption: &str) {
             rope.knots[0].position.y += directions.get(dir).unwrap().y;
 
             for x in 1..rope_len {
-              move_tail(rope.knots[x - 1].position.clone(), &mut rope.knots[x].position);
+                move_tail(
+                    rope.knots[x - 1].position.clone(),
+                    &mut rope.knots[x].position,
+                );
             }
             results.push(rope.knots[rope_len - 1].position.to_string());
         }
@@ -69,16 +71,14 @@ fn do_it(moves: Vec<String>, rope_len: usize, caption: &str) {
     results.sort_unstable(); // sort so we are sure we don't end up with repeating points.
     results.dedup(); // remove duplicate contiguous points
 
-
-
     println!("{}: {}", caption, results.len());
-   // println!("RESULTS:  {:?}", results);
+    // println!("RESULTS:  {:?}", results);
 }
 
 // takes in a mutable reference to the tail's coordinate position.
 // updating it here persists back to the caller.
-fn move_tail(head: Coord, tail: &mut Coord)  {
-
+// tail here is a bit of a misnomer, it is the tailing knot.. so if knot 3 moves then the next knot, 4, would be updated to trail along
+fn move_tail(head: Coord, tail: &mut Coord) {
     let x_diff = head.x - tail.x;
     let y_diff = head.y - tail.y;
 
@@ -101,7 +101,6 @@ fn move_tail(head: Coord, tail: &mut Coord)  {
     } else if x_diff < 0 {
         tail.y -= 1;
     }
-
 }
 
 fn get_rope(size: usize) -> Rope {
