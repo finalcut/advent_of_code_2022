@@ -8,6 +8,7 @@ struct Coord {
     y: i16,
 }
 
+// basically implementing a to_string method for the Coord struct
 impl fmt::Display for Coord {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "({},{})", self.x, self.y)
@@ -41,8 +42,7 @@ fn do_it(moves: Vec<String>, rope_len: usize, caption: &str) {
     let mut rope = get_rope(rope_len);
     let mut results: Vec<String> = Vec::new();
 
-    let ti = rope_len - 1;
-    results.push(rope.knots[ti].position.to_string()); // starting point
+    results.push(rope.knots[0].position.to_string()); // starting point
 
     let mut directions: HashMap<String, Coord> = HashMap::<String, Coord>::new();
     directions.insert("R".to_string(), Coord { x: 1, y: 0 });
@@ -63,7 +63,7 @@ fn do_it(moves: Vec<String>, rope_len: usize, caption: &str) {
                 rope.knots[x].position =
                     get_new_tail(&rope.knots[x - 1].position, &rope.knots[x].position);
             }
-            results.push(rope.knots[ti].position.to_string());
+            results.push(rope.knots[rope_len - 1].position.to_string());
         }
     }
 
