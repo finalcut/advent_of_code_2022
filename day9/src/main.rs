@@ -26,18 +26,13 @@ struct Rope {
 }
 
 fn main() {
-    // passes withs sample data; but not real data.
-    // real answer for my data was 6236 and it was correct. with this new implementation I get 5342 - so pretty far off.
-    // try with values.txt
-    let part1_moves = read_file("part_1_sample.txt").expect("Could not load values");
-    do_it(part1_moves, 2, "Part 1:");
+    let part1_moves = read_file("values.txt").expect("Could not load values");
+    do_it(&part1_moves, 2, "Part 1:");
 
-    // sample data should result in 36 but I get 28
-    let part2_moves = read_file("part_2_sample.txt").expect("Could not load values");
-    do_it(part2_moves, 10, "Part 2:");
+    do_it(&part1_moves, 10, "Part 2:");
 }
 
-fn do_it(moves: Vec<String>, rope_len: usize, caption: &str) {
+fn do_it(moves: &Vec<String>, rope_len: usize, caption: &str) {
     let mut rope = get_rope(rope_len);
     let mut results: Vec<String> = Vec::new();
 
