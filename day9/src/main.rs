@@ -60,8 +60,7 @@ fn do_it(moves: Vec<String>, rope_len: usize, caption: &str) {
             rope.knots[0].position.y += directions.get(dir).unwrap().y;
 
             for x in 1..rope_len {
-                rope.knots[x].position =
-                    get_new_tail(&rope.knots[x - 1].position, &rope.knots[x].position);
+              move_tail(rope.knots[x - 1].position.clone(), &mut rope.knots[x].position);
             }
             results.push(rope.knots[rope_len - 1].position.to_string());
         }
@@ -76,33 +75,31 @@ fn do_it(moves: Vec<String>, rope_len: usize, caption: &str) {
    // println!("RESULTS:  {:?}", results);
 }
 
-fn get_new_tail(head: &Coord, tail: &Coord) -> Coord {
-    let mut t = tail.clone();
+fn move_tail(head: Coord, tail: &mut Coord)  {
 
     let x_diff = head.x - tail.x;
     let y_diff = head.y - tail.y;
 
     if x_diff == 0 && y_diff == 0 {
-        return tail.clone();
+        return;
     }
 
     if x_diff.abs() < 2 && y_diff.abs() < 2 {
-        return tail.clone();
+        return;
     }
 
     if x_diff > 0 {
-        t.x += 1;
+        tail.x += 1;
     } else if x_diff < 0 {
-        t.x -= 1;
+        tail.x -= 1;
     }
 
     if y_diff > 0 {
-        t.y += 1;
+        tail.y += 1;
     } else if x_diff < 0 {
-        t.y -= 1;
+        tail.y -= 1;
     }
 
-    return t.clone();
 }
 
 fn get_rope(size: usize) -> Rope {
