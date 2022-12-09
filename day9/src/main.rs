@@ -75,6 +75,8 @@ fn do_it(moves: Vec<String>, rope_len: usize, caption: &str) {
    // println!("RESULTS:  {:?}", results);
 }
 
+// takes in a mutable reference to the tail's coordinate position.
+// updating it here persists back to the caller.
 fn move_tail(head: Coord, tail: &mut Coord)  {
 
     let x_diff = head.x - tail.x;
