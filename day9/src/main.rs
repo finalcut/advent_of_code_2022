@@ -1,182 +1,104 @@
 use aoc_util::read_file;
+use std::collections::HashMap;
+use std::fmt;
+
+#[derive(Debug, Clone, PartialEq)]
+struct Coord {
+    x: i16,
+    y: i16,
+}
+
+impl fmt::Display for Coord {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "({},{})", self.x, self.y)
+    }
+}
+
+#[derive(Debug, Clone)]
+struct Knot {
+    position: Coord,
+}
+
+#[derive(Debug, Clone)]
+struct Rope {
+    knots: Vec<Knot>,
+}
+
 fn main() {
-    let moves = read_file("test1.txt").expect("Could not load values");
+    let moves = read_file("values.txt").expect("Could not load values");
 
-    let mut two_knots: Vec<[i16; 2]> = Vec::new();
+    let mut directions: HashMap<String, Coord> = HashMap::<String, Coord>::new();
+    directions.insert("U".to_string(), Coord { x: 0, y: 1 });
+    directions.insert("D".to_string(), Coord { x: 0, y: -1 });
+    directions.insert("L".to_string(), Coord { x: -1, y: 0 });
+    directions.insert("R".to_string(), Coord { x: 1, y: 0 });
 
-    /*
-    2  . . . .
-    1  . H . .
-    0  T . . .
-    -1 . . . .
-    */
+    let mut rope = get_rope(2);
 
-    let mut h = [0, 0];
-    let mut t = [0, 0];
-    two_knots.push(t.clone());
-    let dist_limit = 2 as i16;
+    let mut results: Vec<String> = Vec::new();
 
     for line in moves {
         let move_info: Vec<&str> = line.split_whitespace().collect();
         let dir = move_info[0];
-        let dist = move_info[1].parse().unwrap();
-        println!("==============");
-        match dir {
-            "U" => move_up(&mut h, &mut t, dist, &mut two_knots, dist_limit),
-            "D" => move_down(&mut h, &mut t, dist, &mut two_knots, dist_limit),
-            "L" => move_left(&mut h, &mut t, dist, &mut two_knots, dist_limit),
-            "R" => move_right(&mut h, &mut t, dist, &mut two_knots, dist_limit),
-            _ => println!("NOT MOVING"),
+        let dist: i16 = move_info[1].parse().unwrap();
+
+        let tail_pos = rope.knots.len() - 1;
+
+        for _i in 0..dist {
+            rope.knots[0].position.x += directions.get(dir).unwrap().x;
+            rope.knots[0].position.y += directions.get(dir).unwrap().y;
+
+            for x in 0..tail_pos {
+                rope.knots[tail_pos].position = calculate(&rope.knots[x].position, &rope.knots[x + 1].position);
+            }
+
+            results.push(rope.knots[tail_pos].position.to_string());
         }
     }
 
-    println!("{:?}", two_knots);
+    results.sort_unstable();
+    results.dedup();
+    println!("{:?}", rope);
 
-    two_knots.sort_unstable();
-    two_knots.dedup();
-
-
-    println!("spots visited: {:?}", two_knots.len());
+    println!("part1: {}", results.len());
 }
 
-fn move_up(
-    h: &mut [i16; 2],
-    t: &mut [i16; 2],
-    dist: i16,
-    visits: &mut Vec<[i16; 2]>,
-    dist_limit: i16,
-) {
-    println!("moving up: {}", dist);
-    for _i in 0..dist {
-        h[1] += 1;
-        let dist_b = distance_between(h, t);
-        println!("{} diff: {} between h {:?} and t {:?}", _i, dist_b, h, t);
-        if dist_b > 1 {
-            println!("gotta move t");
-            if h[1] - t[1] == dist_limit {
-                t[1] += 1;
-            }
+fn calculate(head: &Coord, tail: &Coord) -> Coord {
+    let mut t = tail.clone();
 
-            let xd = h[0] - t[0];
-            if xd != dist_limit - 2 {
-                if xd < 0 {
-                    t[0] -= 1;
-                } else {
-                    t[0] += 1;
-                }
-            }
+    let x_diff = head.x - tail.x;
+    let y_diff = head.y - tail.y;
 
-            println!("{} final: h {:?} and t {:?}", _i, h, t);
-        }
-        visits.push(t.clone());
+    if x_diff == 0 && y_diff == 0 {
+        return tail.clone();
     }
-}
-fn move_down(
-    h: &mut [i16; 2],
-    t: &mut [i16; 2],
-    dist: i16,
-    visits: &mut Vec<[i16; 2]>,
-    dist_limit: i16,
-) {
-    println!("moving down: {}", dist);
-    for _i in 0..dist {
-        h[1] -= 1;
-        let dist_b = distance_between(h, t);
-        println!("{} diff: {} between h {:?} and t {:?}", _i, dist_b, h, t);
-        if dist_b > 1 {
-            println!("gotta move t");
-            if t[1] - h[1] == dist_limit {
-                t[1] -= 1;
-            }
 
-            let xd = h[0] - t[0];
-            if xd != dist_limit - 2 {
-                if xd < 0 {
-                    t[0] -= 1;
-                } else {
-                    t[0] += 1;
-                }
-            }
-
-            println!("{} final: h {:?} and t {:?}", _i, h, t);
-        }
-        visits.push(t.clone());
+    if x_diff.abs() < 2 && y_diff.abs() < 2 {
+        return tail.clone();
     }
-}
 
-fn move_left(
-    h: &mut [i16; 2],
-    t: &mut [i16; 2],
-    dist: i16,
-    visits: &mut Vec<[i16; 2]>,
-    dist_limit: i16,
-) {
-    println!("moving left: {}", dist);
-    for _i in 0..dist {
-        h[0] -= 1;
-        let dist_b = distance_between(h, t);
-        println!("{} diff: {} between h {:?} and t {:?}", _i, dist_b, h, t);
-        if dist_b > 1 {
-            println!("gotta move t");
-            if t[0] - h[0] == dist_limit {
-                t[0] -= 1;
-            }
-
-            if (h[1] - t[1]) != dist_limit - 2 {
-                t[1] = h[1];
-            }
-
-            let yd = h[1] - t[1];
-            if yd != dist_limit - 2 {
-                if yd < 0 {
-                    t[1] -= 1;
-                } else {
-                    t[1] += 1;
-                }
-            }
-            println!("{} final: h {:?} and t {:?}", _i, h, t);
-        }
-        visits.push(t.clone());
+    if x_diff > 0 {
+        t.x += 1;
+    } else if x_diff < 0 {
+        t.x -= 1;
     }
-}
-fn move_right(
-    h: &mut [i16; 2],
-    t: &mut [i16; 2],
-    dist: i16,
-    visits: &mut Vec<[i16; 2]>,
-    dist_limit: i16,
-) {
-    println!("moving right: {}", dist);
-    for _i in 0..dist {
-        h[0] += 1;
-        let dist_b = distance_between(h, t);
-        println!("{} diff: {} between h {:?} and t {:?}", _i, dist_b, h, t);
-        if dist_b > 1 {
-            println!("gotta move t {}", dist_b);
-            if h[0] - t[0] == dist_limit {
-                t[0] += 1;
-            }
 
-            let yd = h[1] - t[1];
-            if yd != dist_limit - 2 {
-                if yd < 0 {
-                    t[1] -= 1;
-                } else {
-                    t[1] += 1;
-                }
-            }
-
-            println!("{} final: h {:?} and t {:?}", _i, h, t);
-        }
-        visits.push(t.clone());
+    if y_diff > 0 {
+        t.y += 1;
+    } else if x_diff < 0 {
+        t.y -= 1;
     }
+
+    return t.clone();
 }
 
-fn distance_between(head: &mut [i16; 2], tail: &mut [i16; 2]) -> i16 {
-    let h = head.clone();
-    let t = tail.clone();
-    *[(h[0] - t[0]).abs(), (h[1] - t[1]).abs()]
-        .iter()
-        .max()
-        .unwrap()
+fn get_rope(size: usize) -> Rope {
+    let mut rope = Rope {
+        knots: [].to_vec(),
+    };
+
+    for _i in 0..size {
+      rope.knots.push(Knot {position: Coord { x: 0, y: 0 }});
+    }
+    return rope;
 }
