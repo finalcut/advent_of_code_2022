@@ -1,9 +1,8 @@
 use aoc_util::read_file;
 
-#[derive(Debug, Clone)]
 struct Signal {
     during: i64,
-    after: i64,
+  //  after: i64,
 }
 
 struct Row {
@@ -25,7 +24,7 @@ fn main() {
     x_register_value.push(1);
     signal_strength.push(Signal {
         during: 0,
-        after: 0,
+      //  after: 0,
     }); // lets me not think about 0 indexed stuff..
 
     let mut cycle: usize = 0;
@@ -43,7 +42,7 @@ fn main() {
 
         signal_strength.push(Signal {
             during: s1,
-            after: s1,
+            // after: s1,
         });
 
         if command.eq("noop") {
@@ -60,7 +59,7 @@ fn main() {
 
             let sig = Signal {
                 during: compute_strength(rx, cycle),
-                after: compute_strength(r2, cycle),
+                // after: compute_strength(r2, cycle),
             };
 
             signal_strength.push(sig);
@@ -116,7 +115,6 @@ fn draw_grid(grid: &Grid) {
 fn light_up_grid(grid: &mut Grid, x_values: &Vec<i64>) {
     let width = grid.rows[0].pixels.len();
 
-    println!("{:?}", x_values);
 
     for g in 0..grid.rows.len() {
         let start = g * width;
