@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 aoc_util = { path = "../aoc_util" }
+advent-of-code-ocr = "0.1.1"

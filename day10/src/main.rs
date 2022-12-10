@@ -1,5 +1,5 @@
 use aoc_util::read_file;
-
+use advent_of_code_ocr::parse_string_to_letters;
 struct Signal {
     during: i64,
   //  after: i64,
@@ -71,6 +71,7 @@ fn main() {
     println!("part1: {:?}", part1);
 
     // part 2
+    println!("part2:");
     light_up_grid(&mut grid, &x_register_value);
     draw_grid(&grid);
 }
@@ -97,7 +98,7 @@ fn get_empty_grid(width: i16, height: i16) -> Grid {
              instructions said to use a . for this; but it makes the final screen hard to read
              so I used a {space} and the rendering is MUCH easier to read
             */
-            row.pixels.push(' ');
+            row.pixels.push('.');
         }
         grid.rows.push(row);
     }
@@ -105,11 +106,17 @@ fn get_empty_grid(width: i16, height: i16) -> Grid {
 }
 
 fn draw_grid(grid: &Grid) {
-    for row in &grid.rows {
+  let mut str : Vec<String> = Vec::new();
+  for row in &grid.rows {
         let pix = row.pixels.clone();
         let _line: String = pix.into_iter().collect();
         println!("{:?}", _line);
+
+        str.push(_line);
     }
+    let result = str.join("\n");
+
+  println!("== {:?}", parse_string_to_letters(&result));
 }
 
 fn light_up_grid(grid: &mut Grid, x_values: &Vec<i64>) {
@@ -134,7 +141,7 @@ fn light_up_grid(grid: &mut Grid, x_values: &Vec<i64>) {
             let sprite_pos = [x - 1, x + 1];
 
             if point >= sprite_pos[0] && point <= sprite_pos[1] {
-                grid.rows[g].pixels[point as usize] = '█';
+                grid.rows[g].pixels[point as usize] = '#';
             }
 
             point += 1;
