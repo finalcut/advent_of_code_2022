@@ -134,7 +134,7 @@ fn light_up_grid(grid: &mut Grid, x_values: &Vec<i64>) {
             let sprite_pos = [x - 1, x + 1];
 
             if point >= sprite_pos[0] && point <= sprite_pos[1] {
-                grid.rows[g].pixels[point as usize] = '#';
+                grid.rows[g].pixels[point as usize] = '█';
             }
 
             point += 1;
