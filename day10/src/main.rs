@@ -1,3 +1,4 @@
+use std::fmt;
 use aoc_util::read_file;
 use advent_of_code_ocr::parse_string_to_letters;
 struct Signal {
@@ -11,6 +12,19 @@ struct Row {
 
 struct Grid {
     rows: Vec<Row>,
+}
+
+// basically implementing a to_string method for the Coord struct
+impl fmt::Display for Grid {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    let mut str : Vec<String> = Vec::new();
+    for line in &self.rows {
+      let l: String = line.pixels.iter().collect();
+      str.push(l);
+    }
+    let result = str.join("\n");
+    write!(f, "{}", result)
+  }
 }
 
 fn main() {
@@ -106,17 +120,13 @@ fn get_empty_grid(width: i16, height: i16) -> Grid {
 }
 
 fn draw_grid(grid: &Grid) {
-  let mut str : Vec<String> = Vec::new();
+
   for row in &grid.rows {
         let pix = row.pixels.clone();
         let _line: String = pix.into_iter().collect();
         println!("{:?}", _line);
-
-        str.push(_line);
     }
-    let result = str.join("\n");
-
-  println!("== {:?}", parse_string_to_letters(&result));
+    println!("== {:?}", parse_string_to_letters(&grid.to_string()));
 }
 
 fn light_up_grid(grid: &mut Grid, x_values: &Vec<i64>) {
