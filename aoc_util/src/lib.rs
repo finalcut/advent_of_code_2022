@@ -64,7 +64,6 @@ where
 }
 
 
-
 pub fn str_strip_numbers(s: &str) -> Vec<i64> {
     lazy_static! {
         static ref RE: Regex = Regex::new(r"\d+").unwrap();
