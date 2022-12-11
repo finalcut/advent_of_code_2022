@@ -1,22 +1,22 @@
-use aoc_util::{read_file, split_delimited, str_strip_numbers};
+use aoc_util::{read_file, split_delimited, get_i128_numbers_from_string};
 use std::collections::VecDeque;
 
 #[derive(Debug, Clone)]
 struct Monkey {
     name: String,
-    worry: VecDeque<i64>,
+    worry: VecDeque<i128>,
     operation: String,
     adjustment: String,
-    divisor: i64,
+    divisor: i128,
     pass: usize,
     fail: usize,
-    items_inspected: i64,
+    items_inspected: i128,
 }
 
 fn main() {
     let observations: Vec<String> = read_file("values.txt").expect("Could not load values");
     let monkey_info = split_delimited(&observations, &"".to_owned());
-    let boredom_factor: i64 = 3;
+    let boredom_factor: i128 = 3;
 
     let mut monkeys: Vec<Monkey> = Vec::new();
 
@@ -31,11 +31,11 @@ fn main() {
         for x in 0..monkeys.len() {
             while monkeys[x].worry.len() > 0 {
                 monkeys[x].items_inspected += 1;
-                let worry: i64 = monkeys[x].worry.pop_front().unwrap();
-                let adj: i64 = if monkeys[x].adjustment.eq("old") {
+                let worry: i128 = monkeys[x].worry.pop_front().unwrap();
+                let adj: i128 = if monkeys[x].adjustment.eq("old") {
                     worry
                 } else {
-                    monkeys[x].adjustment.parse::<i64>().unwrap()
+                    monkeys[x].adjustment.parse::<i128>().unwrap()
                 };
                 let new_worry = compute_worry(&monkeys[x].operation, worry, adj, boredom_factor);
 
@@ -56,8 +56,8 @@ fn main() {
     println!("part 1: {}", part1);
 }
 
-fn compute_worry(operation: &str, worry: i64, adjustment: i64, divisor: i64) -> i64 {
-    let temp_worry: i64 = match operation {
+fn compute_worry(operation: &str, worry: i128, adjustment: i128, divisor: i128) -> i128 {
+    let temp_worry: i128 = match operation {
         "*" => worry * adjustment,
         "/" => worry / adjustment,
         "+" => worry + adjustment,
@@ -78,16 +78,16 @@ fn get_monkey(info: &Vec<String>) -> Monkey {
     let adj: String = move_info.pop().unwrap().to_string();
     let op: String = move_info.pop().unwrap().to_string();
 
-    let worry = VecDeque::from_iter(str_strip_numbers(&info[2]));
+    let worry = VecDeque::from_iter(get_i128_numbers_from_string(&info[2]));
 
     Monkey {
         name: info[1].clone(),
         worry: worry,
         operation: op,
         adjustment: adj,
-        divisor: str_strip_numbers(&info[4])[0],
-        pass: str_strip_numbers(&info[5])[0] as usize,
-        fail: str_strip_numbers(&info[6])[0] as usize,
+        divisor: get_i128_numbers_from_string(&info[4])[0],
+        pass: get_i128_numbers_from_string(&info[5])[0] as usize,
+        fail: get_i128_numbers_from_string(&info[6])[0] as usize,
         items_inspected: 0,
     }
 }

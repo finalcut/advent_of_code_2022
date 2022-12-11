@@ -64,6 +64,20 @@ where
 }
 
 
+
+pub fn get_i128_numbers_from_string(s: &str) -> Vec<i128> {
+  lazy_static! {
+      static ref RE: Regex = Regex::new(r"\d+").unwrap();
+  }
+  // iterate over all matches
+  RE.find_iter(s)
+      // try to parse the string matches as i64 (inferred from fn type signature)
+      // and filter out the matches that can't be parsed (e.g. if there are too many digits to store in an i64).
+      .filter_map(|digits| digits.as_str().parse().ok())
+      // collect the results in to a Vec<i64> (inferred from fn type signature)
+      .collect()
+}
+
 pub fn str_strip_numbers(s: &str) -> Vec<i64> {
     lazy_static! {
         static ref RE: Regex = Regex::new(r"\d+").unwrap();
