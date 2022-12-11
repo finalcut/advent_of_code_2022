@@ -1,31 +1,37 @@
 
 
 
-const LOOPER : i16 = 13;
-// NOTE: if you set looper >= 14 method 2 and method 3 will generate a 'attempt to multiply with overflow' error.  The numbers are too big!
+const LOOPER : i16 = 12;
+// NOTE: if you set looper >= 13 method 2 and method 3 will generate a 'attempt to multiply with overflow' error.  The numbers are too big!
 
 /*
-OUTPUT when LOOPER = 13
-method 1
-[86, 31, 85, 79, 94, 54, 74, 99, 84]
-[]
-[]
-method 2
-[43025019597926, 9531741697376986, 4823105455958560, 175589650245915439, 184124435925874, 3094144771393464, 21784187376914, 3988838872436664, 310639467202344]
-[]
-[]
-method 3
-[43025019597926, 9531741697376986, 4823105455958560, 175589650245915439, 184124435925874, 3094144771393464, 21784187376914, 3988838872436664, 310639467202344]
-[]
-[]
+  OUTPUT when LOOPER = 12
+
+  method 1
+  ------------------
+  Monkey 1: [96, 96, 9, 37, 23, 93, 52, 27, 48, 48, 14, 14, 63]
+  Monkey 2: [50, 60, 0]
+  Monkey 3: []
+
+  method 2
+  ------------------
+  Monkey 1: [1806690235446, 1806690235446, 8426128726971174, 21473037723571702, 14949583225271438, 292196399403032658, 42480114410725162, 480996554157342, 26715098778077058, 956307364785864678, 491344577958584, 6996728565183224, 1646861620099057488]
+  Monkey 2: [23457574783280, 2443810288694686020, 18866474063469480]
+  Monkey 3: []
+
+  method 3
+  ------------------
+  Monkey 1: [1806690235446, 1806690235446, 8426128726971174, 21473037723571702, 14949583225271438, 292196399403032658, 42480114410725162, 480996554157342, 26715098778077058, 956307364785864678, 491344577958584, 6996728565183224, 1646861620099057488]
+  Monkey 2: [23457574783280, 2443810288694686020, 18866474063469480]
+  Monkey 3: []
 
 */
 
 fn main() {
 
-  let a: Vec<i64> = [79, 98 ].to_vec();
-  let b: Vec<i64> = [  54, 65, 75, 74 ].to_vec();
-  let c: Vec<i64> = [79, 60, 97].to_vec();
+  let a: Vec<i64> = [93, 54, 69, 66, 71].to_vec();
+  let b: Vec<i64> = [89, 51, 80, 66].to_vec();
+  let c: Vec<i64> = [90, 92, 63, 91, 96, 63, 64].to_vec();
 
   method1(a.clone(),b.clone(),c.clone());
   method2(a.clone(),b.clone(),c.clone());
@@ -118,10 +124,8 @@ fn method1(mut m0 : Vec<i64>, mut m1: Vec<i64>, mut m2: Vec<i64>){
     m2.clear();
   }
 
-  println!("method 1");
-  println!("{:?}", m0);
-  println!("{:?}", m1);
-  println!("{:?}", m2);
+  print_results(m0, m1, m2, 1);
+
 
 }
 
@@ -179,10 +183,7 @@ fn method2(mut m0 : Vec<i64>, mut m1: Vec<i64>, mut m2: Vec<i64>){
     m2.clear();
   }
 
-  println!("method 2");
-  println!("{:?}", m0);
-  println!("{:?}", m1);
-  println!("{:?}", m2);
+  print_results(m0, m1, m2, 2);
 
 }
 
@@ -247,8 +248,15 @@ fn method3(mut m0 : Vec<i64>, mut m1: Vec<i64>, mut m2: Vec<i64>){
     m2.clear();
   }
 
-  println!("method 3");
-  println!("{:?}", m0);
-  println!("{:?}", m1);
-  println!("{:?}", m2);
+  print_results(m0, m1, m2, 3);
+
+}
+
+fn print_results(m0: Vec<i64>, m1: Vec<i64>, m2: Vec<i64>, method: usize) {
+  println!("method {}", method);
+  println!("------------------");
+  println!("Monkey 1: {:?}", m0);
+  println!("Monkey 2: {:?}", m1);
+  println!("Monkey 3: {:?}", m2);
+  println!();
 }
