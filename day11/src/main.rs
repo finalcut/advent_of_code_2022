@@ -1,3 +1,11 @@
+/*
+  this is basically a copy/paste of someone elses solution because I did even remember MOD math existed and my efforts with libraries for handling bigger values than i128
+  was going to take WAY too long to run.  I'm pretty sure I had it right but I'll never know.
+
+  source of solution: https://www.reddit.com/r/adventofcode/comments/zifqmh/2022_day_11_solutions/izsr2lq/
+  that reddit comment has a link to a site where their code was posted.  The link is huge so I'm not including it.
+*/
+
 use itertools::Itertools;
 use parse_display::{Display, FromStr};
 
