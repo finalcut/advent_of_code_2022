@@ -1,5 +1,6 @@
 # Special notes:
-Chose to put a blank space on the first line so after splitting the input all monkey vectors have an ignorable element at [0]
-
+Dont need the blank line at the beginning anymore thanks to parse_display
 
 part1: 58794
+
+part2: 20151213744

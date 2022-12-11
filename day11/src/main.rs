@@ -1,93 +1,87 @@
-use aoc_util::{read_file, split_delimited, get_i128_numbers_from_string};
-use std::collections::VecDeque;
+use itertools::Itertools;
+use parse_display::{Display, FromStr};
 
-#[derive(Debug, Clone)]
-struct Monkey {
-    name: String,
-    worry: VecDeque<i128>,
-    operation: String,
-    adjustment: String,
-    divisor: i128,
-    pass: usize,
-    fail: usize,
-    items_inspected: i128,
+#[derive(Display, FromStr, Clone, Debug)]
+enum Op {
+    #[display(r"old * old")]
+    Square,
+    #[display(r"old + {0}")]
+    Add(i64),
+    #[display(r"old * {0}")]
+    Multiply(i64),
 }
+
+#[derive(Debug, Clone, FromStr, Display)]
+#[display(r"Monkey {id}:|  Starting items: {worry_string}|  Operation: new = {operation}|  Test: divisible by {divisor}|    If true: throw to monkey {pass_monkey}|    If false: throw to monkey {fail_monkey}")]
+struct Monkey {
+    id: usize,
+    operation: Op,
+    divisor: i64,
+    worry_string: String,
+    pass_monkey: usize,
+    fail_monkey: usize,
+    #[from_str(ignore, default)]
+    worry: Vec<i64>,
+    #[from_str(ignore, default)]
+    inspected: usize,
+}
+
 
 fn main() {
-    let observations: Vec<String> = read_file("values.txt").expect("Could not load values");
-    let monkey_info = split_delimited(&observations, &"".to_owned());
-    let boredom_factor: i128 = 3;
+//    let observations: Vec<String> = read_file("test.txt").expect("Could not load values");
 
-    let mut monkeys: Vec<Monkey> = Vec::new();
 
-    for info in monkey_info {
-        monkeys.push(get_monkey(&info.to_vec()));
-    }
+    let input: Vec<Monkey> = include_str!("../values.txt")
+    .split("\n\n")
+    .map(|block| block.trim())
+    .map(|block| {
+        let block = block.replace("\n", "|");
+        let mut monkey: Monkey = block.parse().unwrap();
+        let items = monkey
+            .worry_string
+            .split(", ")
+            .map(|x| x.parse::<i64>().unwrap())
+            .collect();
+        monkey.worry = items;
+        monkey
+    })
+    .collect();
 
-    let total_rounds = 20;
+    let mut monkeys = input.clone();
+    /*
+     this link help explains why this factor works: https://www.reddit.com/r/adventofcode/comments/ziw4aq/2022_day_11_part_2_so_about_the_trick/izsr5av/
+     basically, the product of all the divisors is the smallest common multiple. I still don't fully understand it.. but I'm doing some reading.
+    */
+    let factor: i64 = monkeys.iter().map(|m| m.divisor).product();
 
-    for _i in 0..20 {
-        //let mut monkey_pass = monkeys.clone();
-        for x in 0..monkeys.len() {
-            while monkeys[x].worry.len() > 0 {
-                monkeys[x].items_inspected += 1;
-                let worry: i128 = monkeys[x].worry.pop_front().unwrap();
-                let adj: i128 = if monkeys[x].adjustment.eq("old") {
-                    worry
-                } else {
-                    monkeys[x].adjustment.parse::<i128>().unwrap()
-                };
-                let new_worry = compute_worry(&monkeys[x].operation, worry, adj, boredom_factor);
+    for _ in 0..10000 {
+      for i in 0..monkeys.len() {
+          let m = monkeys[i].clone();
+          for old in m.worry {
+              let new = match m.operation {
+                  Op::Square => old * old,
+                  Op::Add(x) => old + x,
+                  Op::Multiply(x) => old * x,
+              }  % factor; // for part 1 - put a div/3 after new is computed before modding by factor.
+              if new % m.divisor == 0 {
+                  monkeys[m.pass_monkey].worry.push(new);
+              } else {
+                  monkeys[m.fail_monkey].worry.push(new);
+              }
+          }
+          monkeys[i].inspected += monkeys[i].worry.len();
+          monkeys[i].worry.clear();
+      }
+  }
+  let monkey_business: usize = monkeys
+      .iter()
+      .map(|m| m.inspected)
+      .sorted()
+      .rev()
+      .take(2)
+      .product();
+  println!("{monkey_business}");
 
-                let mut index_to_update = 0;
-                if (new_worry % monkeys[x].divisor) == 0 {
-                    // success condition
-                    index_to_update = monkeys[x].pass;
-                } else {
-                    index_to_update = monkeys[x].fail;
-                }
-                let _ = monkeys[index_to_update].worry.push_back(new_worry);
-            }
-        }
-    }
 
-    monkeys.sort_by(|a, b| b.items_inspected.cmp(&a.items_inspected));
-    let part1 = monkeys[0].items_inspected * monkeys[1].items_inspected;
-    println!("part 1: {}", part1);
-}
 
-fn compute_worry(operation: &str, worry: i128, adjustment: i128, divisor: i128) -> i128 {
-    let temp_worry: i128 = match operation {
-        "*" => worry * adjustment,
-        "/" => worry / adjustment,
-        "+" => worry + adjustment,
-        "-" => worry - adjustment,
-        _ => worry,
-    };
-
-    if divisor != 0 {
-        return temp_worry / divisor;
-    } else {
-        return temp_worry;
-    }
-}
-
-fn get_monkey(info: &Vec<String>) -> Monkey {
-    let i = info[3].clone();
-    let mut move_info: Vec<&str> = i.split_whitespace().collect();
-    let adj: String = move_info.pop().unwrap().to_string();
-    let op: String = move_info.pop().unwrap().to_string();
-
-    let worry = VecDeque::from_iter(get_i128_numbers_from_string(&info[2]));
-
-    Monkey {
-        name: info[1].clone(),
-        worry: worry,
-        operation: op,
-        adjustment: adj,
-        divisor: get_i128_numbers_from_string(&info[4])[0],
-        pass: get_i128_numbers_from_string(&info[5])[0] as usize,
-        fail: get_i128_numbers_from_string(&info[6])[0] as usize,
-        items_inspected: 0,
-    }
-}
+  }
