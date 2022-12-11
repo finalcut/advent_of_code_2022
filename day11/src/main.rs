@@ -57,8 +57,31 @@ fn main() {
 
     let mut monkeys = input.clone();
     /*
-     this link help explains why this factor works: https://www.reddit.com/r/adventofcode/comments/ziw4aq/2022_day_11_part_2_so_about_the_trick/izsr5av/
-     basically, the product of all the divisors is the smallest common multiple. I still don't fully understand it.. but I'm doing some reading.
+      some info on modular arithmetic that helped me grok this as you read this
+      bit of math theory.. think of the `factor` value as `m` | we will NEVER put a number as big as m in the
+      "worry" array so our math will never get crazy big.  This is pretty freaking cool. Its sort of a simple
+      way of encoding numbers so long as you don't care that many numbers encode to the same end result.
+
+      So in the example 75 mod 17 = 7  it will end up being treated the same as 41 because 41 mod 17 = 7 as well.
+      in terms of worry they are just degrees of the same "worry"
+
+      in this example above both 75 and 41 are called congruent modulo 17 (same remainder when modulod against 17).  f
+      see https://www.doc.ic.ac.uk/~mrh/330tutor/ch03.html
+
+      In modular arithmetic, the set of numbers is limited so that only numbers
+        0,1,2,...,m−1 are used, where m is a constant. Each number x is represented
+        by the number x mod m: the remainder after dividing x by m. For example, if
+        m = 17, then 75 is represented by 75 mod 17 = 7.
+        Often we can take remainders before doing calculations. In particular, the
+        following formulas hold:
+        (x+ y) mod m = (x mod m+ y mod m) mod m
+        (x− y) mod m = (x mod m− y mod m) mod m
+        (x · y) mod m = (x mod m· y mod m) mod m
+        x
+        n mod m = (x mod m)
+        n mod m
+
+
     */
     let factor: i64 = monkeys.iter().map(|m| m.divisor).product();
 
