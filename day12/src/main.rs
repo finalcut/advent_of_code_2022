@@ -1,3 +1,6 @@
+// Totally stolen from : https://github.com/SvetlinZarev/advent-of-code/blob/main/2022/aoc-day-12/src/lib.rs
+// I had no idea how to do this.  I feel like I've forgotten a lot since college.
+
 use std::collections::{VecDeque};
 
 const DIR: [(isize, isize); 4] = [(0, -1), (0, 1), (1, 0), (-1, 0)]; // directions to move left, right, up, down
