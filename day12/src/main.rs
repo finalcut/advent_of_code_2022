@@ -71,8 +71,11 @@ fn bfs(mut grid: Grid, start_row: usize, start_col: usize) -> Option<u32> {
       for _ in 0..queue.len() {
           // look at each hill starting from the front of the queue and working to the back
           if let Some((hill, row, col)) = queue.pop_front() {
-              if grid.target_symbol == hill { // our target is the start symbol.. have we found it? Sweet, send back the step count
-                  return Some(steps); // Some is an "option".. so satisfies Option<u32>
+
+              // have we found our target? Sweet, send back the step count.  If there are multiple that match this'll be the first one we find so the shortest
+              if grid.target_symbol == hill {
+                // Some is an "option".. so satisfies Option<u32>
+                return Some(steps);
               }
 
               // check all four directions around the point we are at.
@@ -96,13 +99,14 @@ fn bfs(mut grid: Grid, start_row: usize, start_col: usize) -> Option<u32> {
                       continue;
                   }
 
+                  // we need to know what the hill is.
                   let mut new_hill = grid.points[row_x][col_x];
 
                   //in part 1 of the puzzle we have a special end point, convert it to height of `a`
                   new_hill = if new_hill == b'S' { b'a' } else { new_hill };
 
                   // skip already visited hills AND
-                  // skip paths that violate the condition of maximum 1 diff in the steepness increase
+                  // skip paths that violate the condition of maximum 1 diff in the steepness decrease
                   // from hill to new_hill
                   if new_hill == 0 || (new_hill < hill && (hill - new_hill) > 1) {
                       continue;
@@ -111,9 +115,8 @@ fn bfs(mut grid: Grid, start_row: usize, start_col: usize) -> Option<u32> {
                   // add the hill to the back of the queue to process later..
                   queue.push_back((grid.points[row_x][col_x], row_x, col_x));
 
-                  // mark as visited
+                  // mark as visited; make sure we don't go into some kind of searching loop. smart.
                   grid.points[row_x][col_x] = 0;
-                  //println!("{:?}", grid);
               }
           }
       }
@@ -122,13 +125,16 @@ fn bfs(mut grid: Grid, start_row: usize, start_col: usize) -> Option<u32> {
       but each time this for statement is evaluated the queue.len() changes.
 
       So first pass it is a 1 so it loops one time.. The second then gets here and increments steps
-      the second pass the queue len is a new value (maybe still 1; but a new 1 in the queue). and it loops over that queue, and then increments this again..
+      the second pass the queue len is a new value (maybe still 1; but a new 1 in the queue).
+      and it loops over that queue, and then increments this again..
       */
 
       steps += 1;
   }
 
-  None // the goal was not met.. we found nothing.
+  // the goal was not met.. we found nothing.
+  // None is a special Option.  I think we would use error handling against this in the caller if necessary
+  None
 }
 
 #[derive(Clone, Debug)]
