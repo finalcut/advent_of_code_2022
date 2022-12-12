@@ -43,8 +43,16 @@ fn main() {
 fn method1(mut m0 : Vec<i64>, mut m1: Vec<i64>, mut m2: Vec<i64>){
 
       /*
+
+
       some info on modular arithmetic that helped me grok this as you read this
-      bit of math theory.. think of the `factor` value as `m` | we will NEVER put a number as big as m in the
+      bit of math theory..
+
+      First, read this reddit comment.. It really helps explain why the product of all the divisors is the right thing to work with:
+      https://www.reddit.com/r/adventofcode/comments/zizi43/2022_day_11_part_2_learning_that_it_was_that/iztt8mx/
+
+
+      think of the `factor` value as `m` | we will NEVER put a number as big as m in the
       "worry" array so our math will never get crazy big.  This is pretty freaking cool. Its sort of a simple
       way of encoding numbers so long as you don't care that many numbers encode to the same end result.
 
