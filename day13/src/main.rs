@@ -3,7 +3,9 @@
     numbers as single character strings such as "6" and "5" have standard comparison operations like < and > and act just like their numeric counterparts
 
 failure: 1646 too small
+part2: 21756 is correct
 */
+use std::cmp::Ordering;
 fn main() {
     let input: Vec<Vec<&str>> = include_str!("../values.txt")
         .split("\n\n")
@@ -13,67 +15,92 @@ fn main() {
 
     let mut part1_good_indexes: Vec<usize> = [].to_vec();
     for c in 0..input.len() {
-        let x = json::parse(input[c][0]).unwrap();
-        let y = json::parse(input[c][1]).unwrap();
+        let left = json::parse(input[c][0]).unwrap();
+        let right = json::parse(input[c][1]).unwrap();
 
-
-        if compare(x,y) == 1 {
-          part1_good_indexes.push(c + 1);
+        // left is less than right so it is correct
+        if compare(left, right) == -1  {
+            part1_good_indexes.push(c + 1);
         }
     }
 
-    let mut flat : Vec<&str> = input.concat();
+    // part 2..
+    let mut flat: Vec<&str> = input.concat();
+    // inject the dividers..
     flat.push("[[2]]");
     flat.push("[[6]]");
-   // flat.sort_by(|a,b| compare(a,b) );
 
+    flat.sort_by(|a, b| {
+        let c = compare(json::parse(a).unwrap(), json::parse(b).unwrap());
+        if c == 0 {
+            Ordering::Equal
+        } else if c == 1 {
+            Ordering::Greater
+        } else {
+            Ordering::Less
+        }
+    });
+
+    // find the dividers indexes (+1)
+    let d1 =
+        flat
+            .iter()
+            .position(|r| r.eq(&"[[2]]"))
+            .unwrap() + 1;
+    let d2 =
+        flat
+            .iter()
+            .position(|r| r.eq(&"[[6]]"))
+            .unwrap() + 1;
+    let decoder = d1 * d2;
 
     let sum: usize = part1_good_indexes.iter().sum();
     println!("part 1: {:?}", sum);
-    println!("indexes of success {:?}", part1_good_indexes);
+    println!("part 2: {:?} : {}, {}", decoder, d1, d2);
 }
 
-fn compare(x: json::JsonValue, y: json::JsonValue) -> i16 {
-    out_fails("x/y", x.clone(), y.clone());
+fn compare(left: json::JsonValue, right: json::JsonValue) -> i16 {
+    print_out("left/right", left.clone(), right.clone());
 
+    if left.is_array() && right.is_array() {
+        let mut max = left.len();
+        if right.len() > max {
+            max = right.len();
+        }
+        for i in 0..max {
+            if i >= left.len() {
+                return -1;
+            }
+            if i >= right.len() {
+                return 1;
+            }
 
-    if x.is_array() && y.is_array() {
-      let mut max = x.len();
-      if y.len() > max {
-        max = y.len();
-      }
-
-      for i in 0..max {
-        if i >= x.len() {return 1};
-        if i >= y.len() {return -1};
-
-        let result = compare(x[i].clone() ,y[i].clone());
-        if result != 0 {
-          return result;
+            let result = compare(left[i].clone(), right[i].clone());
+            if result != 0 {
+                return result;
+            }
         }
 
-      }
-
-      return 0; // they are the same..
-
-  } else if x.is_number() & y.is_number() {
-    if x.as_i16().unwrap() > y.as_i16().unwrap() { return -1 };
-    if y.as_i16().unwrap() > x.as_i16().unwrap() { return 1 };
-    return 0; // they are the same
-  } else {
-    if x.is_array() {
-      return compare(x, json::array![y.as_i16().unwrap()]);
+        return 0; // they are the same..
+    } else if left.is_number() & right.is_number() {
+        if left.as_i16().unwrap() > right.as_i16().unwrap() {
+            return 1;
+        }
+        if right.as_i16().unwrap() > left.as_i16().unwrap() {
+            return -1;
+        }
+        return 0; // they are the same
     } else {
-      return compare(json::array![x.as_i16().unwrap()] , y)
+        if left.is_array() {
+            return compare(left, json::array![right.as_i16().unwrap()]);
+        } else {
+            return compare(json::array![left.as_i16().unwrap()], right);
+        }
     }
-  }
-
-
-
 }
 
-fn out_fails(m: &str, a: json::JsonValue, b: json::JsonValue) {
-    println!("msg: {}",  m);
+fn print_out(m: &str, a: json::JsonValue, b: json::JsonValue) {
+    println!("msg: {}", m);
     println!("{} {:?}", a.len(), json::stringify(a.clone()));
     println!("{} {:?}", b.len(), json::stringify(b.clone()));
     println!();
