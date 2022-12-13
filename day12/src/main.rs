@@ -54,6 +54,37 @@ fn bfs_from_start_element(grid: Grid) -> u32 {
 }
 
 // this starts at the end point and works its way back to the start point..
+
+/* explaination how BFS works..
+Sabqponm
+abcryxxl
+accszExk
+acctuvwj
+abdefghi
+
+0. seed the queue with your starting points value (in this case, ascii z) and mark the starting point visited
+1. pop the first item of your queue that's your current point
+2. at your current point evaluate your neighbors to the left, right, above, below
+3. for each neighbor that fits the rule (one letter smaller or equal in this case; by ascii code) put that neighbor on the back of the queue.
+4. if the starting point isn't found.. repeat for each item that was added to the queue since you were last at step 1.
+5. your queue now just has the "neighbors" of the points you've visited in this loop.
+4. go back to part step one.
+
+illustration:
+0. [E] and step counter is 0.
+1. [E].pop() => E (treat E as a z)
+2. look at z,x,x,v which surround E.  only z matches rule of 1 or less difference
+3. [].pus(z) => [z]; mark space with E visited; set to 0
+4. we didn't see the target.  increment step counter
+5. loop over queue again (effectively repeating steps 1-4 with current queue until target is found)
+...
+1. [z].pop() => z
+2  look at s,y,u,0.  Only y meets; set space we're in to 0 to mark visited
+3. [].push(y) => [y]
+4. we didn't see target increment step counter
+... repeat 1-4 with queue again..
+*/
+
 fn bfs(mut grid: Grid, start_row: usize, start_col: usize) -> Option<u32> {
 
   let mut queue = VecDeque::new();
@@ -66,8 +97,9 @@ fn bfs(mut grid: Grid, start_row: usize, start_col: usize) -> Option<u32> {
   queue.push_back((b'z', start_row, start_col));
 
   while !queue.is_empty() {
-      println!("queue len: {}, queue: {:?}, grid: {:?}", queue.len(), queue, grid.points);
-      // not only do we need to go from 0 to queue.len so that we can avoid ugly borrowing stuff in rust.. but the len can change.. on each pass..
+
+    //println!("grid: {:?}", grid.points);
+    // not only do we need to go from 0 to queue.len so that we can avoid ugly borrowing stuff in rust.. but the len can change.. on each pass..
       for _ in 0..queue.len() {
           // look at each hill starting from the front of the queue and working to the back
           if let Some((hill, row, col)) = queue.pop_front() {
