@@ -17,7 +17,7 @@ fn main() {
         let y = json::parse(input[c][1]).unwrap();
 
 
-        if compare_arrays(x,y) == 1 {
+        if compare(x,y) == 1 {
           part1_good_indexes.push(c + 1);
         }
     }
