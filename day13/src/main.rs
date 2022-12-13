@@ -62,9 +62,9 @@ fn compare(x: json::JsonValue, y: json::JsonValue) -> i16 {
     return 0; // they are the same
   } else {
     if x.is_array() {
-      return compare_arrays(x, json::array![y.as_i16().unwrap()]);
+      return compare(x, json::array![y.as_i16().unwrap()]);
     } else {
-      return compare_arrays(json::array![x.as_i16().unwrap()] , y)
+      return compare(json::array![x.as_i16().unwrap()] , y)
     }
   }
 
