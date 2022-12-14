@@ -6,17 +6,28 @@ fn main() {
         .map(|block| { block.split("\n").collect() })
         .collect();
 
-    let mut part1_good_indexes: Vec<usize> = [].to_vec();
-    for c in 0..input.len() {
-        let left = json::parse(input[c][0]).unwrap();
-        let right = json::parse(input[c][1]).unwrap();
+        count_properly_ordered_pairs(&input);
+        get_decoder(&input);
+}
 
-        // left is less than right so it is correct
-        if compare(left, right) == -1  {
-            part1_good_indexes.push(c + 1);
-        }
-    }
+fn count_properly_ordered_pairs(input: &Vec<Vec<&str>>) {
+  let mut part1_good_indexes: Vec<usize> = [].to_vec();
+  for c in 0..input.len() {
+      let left = json::parse(input[c][0]).unwrap();
+      let right = json::parse(input[c][1]).unwrap();
 
+      // left is less than right so it is correct
+      if compare(left, right) == -1  {
+          part1_good_indexes.push(c + 1);
+      }
+  }
+
+  let sum: usize = part1_good_indexes.iter().sum();
+  println!("part 1: {:?}", sum);
+
+}
+
+fn get_decoder(input: &Vec<Vec<&str>>) {
     // part 2..
     let mut flat: Vec<&str> = input.concat();
     // inject the dividers..
@@ -47,13 +58,10 @@ fn main() {
             .unwrap() + 1;
     let decoder = d1 * d2;
 
-    let sum: usize = part1_good_indexes.iter().sum();
-    println!("part 1: {:?}", sum);
     println!("part 2: {:?} : {}, {}", decoder, d1, d2);
 }
-
 fn compare(left: json::JsonValue, right: json::JsonValue) -> i16 {
-    print_out("left/right", left.clone(), right.clone());
+//    print_out("left/right", left.clone(), right.clone());
 
     if left.is_array() && right.is_array() {
         let mut max = left.len();
