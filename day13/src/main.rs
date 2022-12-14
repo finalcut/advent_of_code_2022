@@ -1,10 +1,3 @@
-/*
-  Notes:
-    numbers as single character strings such as "6" and "5" have standard comparison operations like < and > and act just like their numeric counterparts
-
-failure: 1646 too small
-part2: 21756 is correct
-*/
 use std::cmp::Ordering;
 fn main() {
     let input: Vec<Vec<&str>> = include_str!("../values.txt")
